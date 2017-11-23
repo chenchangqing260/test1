@@ -1,0 +1,161 @@
+//
+//  ScienceChina-Prefix.pch
+//  ScienceChina
+//
+//  Created by Ellison on 16/4/28.
+//  Copyright © 2016年 sevenplus. All rights reserved.
+//
+
+#ifndef ScienceChina_Prefix_pch
+#define ScienceChina_Prefix_pch
+
+// Include any system framework and library headers here that should be included in all compilation units.
+// You will also need to set the Prefix Header build setting of one or more of your targets to reference this file.
+
+#endif /* ScienceChina_Prefix_pch */
+
+// 定义public导入文件
+#ifdef __OBJC__
+
+#import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
+#import "NSString+Util.h"
+#import "UIColor+Util.h"
+#import "UIImage+Util.h"
+#import "FlowUtil.h"
+#import "UILabel+StringFrame.h"
+#import <SDWebImage/UIImageView+WebCache.h>
+#import "WebAccessManager.h"
+#import "MemberManager.h"
+#import "CRToastUtil.h"
+#import "SVProgressHUDUtil.h"
+#import "JTNavigationController.h"
+#import "UIViewController+JTNavigationExtension.h"
+#import <Masonry/Masonry.h>
+#import "MMPopupItem.h"
+#import "MMAlertView.h"
+#import "MMSheetView.h"
+#import "MMPopupWindow.h"
+#import "MJRefresh.h"
+#import "LabelUtil.h"
+#import "UIView+Util.h"
+#import "UpdateVersionUtil.h"
+#import "CONSTS.h"
+#import "MJRefresh.h"
+#import "AppDelegate.h"
+#import "BDIAgent.h"//百分点-精准推送
+#import "BDIDataStatistics.h"
+#import "MJExtension.h"
+#import "UIImage+GIF.h"
+#import <tingyunApp/NBSAppAgent.h>
+#endif
+
+#define LStr(key) NSLocalizedString(key, nil)
+
+#define kAppCurVersion [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"]
+
+//// 缓存主目录
+//#define HSCachesDirectory [[NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:@"HSCache"]
+//
+//
+//// 文件后缀名
+//#define HSFileExtension(url) [[url componentsSeparatedByString:@"."] lastObject]
+//
+//// 保存文件名
+//#define HSFileName(url) [[url.md5String stringByAppendingString:@"."] stringByAppendingString:HSFileExtension(url)]
+//
+//// 文件的存放路径（caches）
+//#define HSFileFullpath(url) [HSCachesDirectory stringByAppendingPathComponent:HSFileName(url)]
+
+#define kCachePath (NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES)[0])
+
+//获取设备的物理高度,物理宽度
+#define kSCREEN_HEIGHT [UIScreen mainScreen].bounds.size.height
+#define kSCREEN_WIDTH [UIScreen mainScreen].bounds.size.width
+#define kSCREEN_BOUNDS ([UIScreen mainScreen].bounds)
+
+#define kNAV_HEIGHT 64.0f
+
+
+#define kHEIGHT_480 480.0f
+#define kHEIGHT_568 568.0f
+#define kHEIGHT_667 667.0f
+#define kHEIGHT_736 736.0f
+
+#define kWIDTH_375  375.0f
+
+#define is35InchScreen() ([UIScreen mainScreen].bounds.size.height == kHEIGHT_480)
+#define is4InchScreen()  ([UIScreen mainScreen].bounds.size.height == kHEIGHT_568)
+#define is47InchScreen() ([UIScreen mainScreen].bounds.size.height == kHEIGHT_667)
+#define is55InchScreen() ([UIScreen mainScreen].bounds.size.height == kHEIGHT_736)
+
+// 主要颜色
+#define kMAINFONT_COLOR [UIColor colorWithHex:0x444444];
+
+// 常用字体
+#define FONT_7  [UIFont systemFontOfSize:7]
+#define FONT_8  [UIFont systemFontOfSize:8]
+#define FONT_9  [UIFont systemFontOfSize:9]
+#define FONT_10 [UIFont systemFontOfSize:10]
+#define FONT_11 [UIFont systemFontOfSize:11]
+#define FONT_12 [UIFont systemFontOfSize:12]
+#define FONT_13 [UIFont systemFontOfSize:13]
+#define FONT_14 [UIFont systemFontOfSize:14]
+#define FONT_15 [UIFont systemFontOfSize:15]
+#define FONT_16 [UIFont systemFontOfSize:16]
+#define FONT_17 [UIFont systemFontOfSize:17]
+#define FONT_18 [UIFont systemFontOfSize:18]
+#define FONT_19 [UIFont systemFontOfSize:19]
+#define FONT_20 [UIFont systemFontOfSize:20]
+#define FONT_21 [UIFont systemFontOfSize:21]
+#define FONT_22 [UIFont systemFontOfSize:22]
+
+// 沙盒
+#define kUserDefaultKeyLoginCredential @"userDefaultKeyLoginCredential"
+#define kUserDefaultKeyCollectCategory @"userDefaultKeyCollectCategory"
+#define kUserDefaultKeyCollectCategoryForUser(memberId) [memberId stringByAppendingString:kUserDefaultKeyCollectCategory]
+#define kUserDefaultKeyShowDaily @"userDefaultKeyShowDaily"
+#define kUserDefaultKeyMessagePush @"userDefaultKeyMessagePush"
+#define kUserDefaultKeyAnony @"userDefaultKeyAnony"
+#define kUserDefaultKeyVideoShow @"userDefaultKeyVideoShow"
+#define kUserDefaultKeyPreferedFontSize @"preferedFontSize"
+#define kUserDefaultKeyChangeTest @"changeTest"
+#define kUserDefaultKeyIsShowTabbarRed @"isShowTabbarRed"
+#define kUserDefaultKeyIsShowBindCellPhone @"isShowBindCellPhone"
+
+#define kCurrentVersion [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"]
+
+// 通知
+#define kNOTOICE_SAVEDATAAFTERLOGIN @"savedata_after_login"
+#define kNOTOICE_UPDATE_PERSINAL_INFO @"update_personal_info"
+#define kNOTOICE_UPDATE_MYVIEW_INFO @"update_myview"
+#define kNOTOICE_REFRESH_PICANDTEXTVIEW_INFO @"refresh_picandtextinfoview"
+#define kNOTOICE_REFRESH_VIDEODETIAL_INFO @"refresh_videodetailinfo"
+#define kNOTOICE_REFRESH_VIDEOVIEW_INFO @"refresh_videoinfoview"
+#define kNOTOICE_REFRESH_PICVIEW_INFO @"refresh_picview"
+#define kNOTOICE_REFRESH_QUESTIONREPLY_INFO @"refresh_question_reply"
+#define kNOTOICE_CHECKAUTOLOGIN @"check_auto_login"
+#define kNOTOICE_RELOADHOMEPAGE @"reloadHomePage"
+#define kNOTOICE_VIDEO_DOWNLOAD @"downloadvideo"
+#define kNOTOICE_VIDEO_COMPLETE @"completevideo"
+#define kNOTOICE_REFRESH_SETTING @"refreshSetting"
+
+// 第三方注册key
+#define kWXApiKey @"wxbc4ff4062316dd5a"
+#define kWXSecret @"562874951b68170cfb29a8c804439552"
+#define kWeiBoAppKey @"2155990679"
+#define kWeiBoRedirectURL @"http://sns.whalecloud.com/sina2/callback"
+#define kQQApiKey @"1105399488"
+
+// 苹果AppleId
+#define kAppleId @"1114665048"
+
+//友盟AppKey
+#define kUMAppKey @"57878e78e0f55acea8003df0"
+
+//log打印
+#ifdef DEBUG
+#define DLog(fmt , ...) NSLog((@"--DEBUG-- %s Line:%d " fmt), __PRETTY_FUNCTION__, __LINE__,##__VA_ARGS__)
+#else
+#define DLog(fmt,...)
+#endif

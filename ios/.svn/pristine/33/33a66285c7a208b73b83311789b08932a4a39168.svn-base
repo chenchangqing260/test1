@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13196" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13173"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB" customClass="MyWelcomView">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="2Nn-7a-szQ">
+                    <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="boolean" keyPath="layer.masksToBounds" value="YES"/>
+                    </userDefinedRuntimeAttributes>
+                </imageView>
+            </subviews>
+            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <constraints>
+                <constraint firstItem="2Nn-7a-szQ" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="I4a-Wm-lfr"/>
+                <constraint firstAttribute="trailing" secondItem="2Nn-7a-szQ" secondAttribute="trailing" id="cZq-d6-eeg"/>
+                <constraint firstItem="2Nn-7a-szQ" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="h1N-gX-K6j"/>
+                <constraint firstAttribute="bottom" secondItem="2Nn-7a-szQ" secondAttribute="bottom" id="z9W-z0-vCV"/>
+            </constraints>
+            <connections>
+                <outlet property="UIimage" destination="2Nn-7a-szQ" id="tdk-vm-Kj8"/>
+            </connections>
+            <point key="canvasLocation" x="249" y="360"/>
+        </view>
+    </objects>
+</document>

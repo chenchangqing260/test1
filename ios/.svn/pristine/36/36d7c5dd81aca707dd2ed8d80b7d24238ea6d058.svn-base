@@ -1,0 +1,41 @@
+inhibit_all_warnings!
+# Uncomment this line to define a global platform for your project
+platform :ios, “8.0”
+
+target 'ScienceChina' do
+
+pod 'MJRefresh'
+
+pod 'SDWebImage', '~>3.7'
+
+pod 'AFNetworking', '~> 2.0’
+
+pod 'MJExtension'
+
+pod 'SVProgressHUD'
+
+pod 'MMPopupView'
+
+pod 'CRToast', '~> 0.0.7'
+
+pod "FSMediaPicker"
+
+pod "Qiniu", "~> 7.0"
+
+pod "WeiboSDK"
+
+pod 'EAIntroView', '~> 2.8.0'
+
+pod 'IQKeyboardManager'
+
+pod 'SDAutoLayout', '~> 1.53'
+
+pod 'SDCycleScrollView','~> 1.64'
+
+pod 'UMengAnalytics-NO-IDFA'
+
+pod “tingyunApp”
+
+pod 'Meiqia', '~> 3.3.4.1'
+    
+end

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="12121" systemVersion="16D32" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12089"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="gTV-IL-0wX" customClass="IndexBannerCollectionViewCell">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="189"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="375" height="189"/>
+                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="sJx-Wx-zwe" customClass="SDCycleScrollView">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="180"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="180" id="kHq-4D-4Gi"/>
+                        </constraints>
+                    </view>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ve4-ro-utx">
+                        <rect key="frame" x="0.0" y="180" width="375" height="9"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                </subviews>
+            </view>
+            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <constraints>
+                <constraint firstItem="Ve4-ro-utx" firstAttribute="top" secondItem="sJx-Wx-zwe" secondAttribute="bottom" id="7fg-BA-xA1"/>
+                <constraint firstAttribute="bottom" secondItem="Ve4-ro-utx" secondAttribute="bottom" id="QS6-7k-D0M"/>
+                <constraint firstItem="sJx-Wx-zwe" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="aIu-6l-8y6"/>
+                <constraint firstAttribute="trailing" secondItem="sJx-Wx-zwe" secondAttribute="trailing" id="epg-ze-ScO"/>
+                <constraint firstAttribute="trailing" secondItem="Ve4-ro-utx" secondAttribute="trailing" id="fku-s1-W6M"/>
+                <constraint firstItem="sJx-Wx-zwe" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="hpE-OU-5aa"/>
+                <constraint firstItem="Ve4-ro-utx" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="tED-LK-qYu"/>
+            </constraints>
+            <connections>
+                <outlet property="conCycleScrollViewHeight" destination="kHq-4D-4Gi" id="Ze4-16-ePS"/>
+                <outlet property="cycleScrollView" destination="sJx-Wx-zwe" id="vlY-Xg-kCL"/>
+            </connections>
+            <point key="canvasLocation" x="24.5" y="51.5"/>
+        </collectionViewCell>
+    </objects>
+</document>

@@ -1,0 +1,14 @@
+/* 
+  Chinese.strings
+  ScienceChina
+
+  Created by Ellison on 16/4/29.
+  Copyright © 2016年 sevenplus. All rights reserved.
+*/
+"category" = "分类";
+"estation" = "基站";
+"my" = "我的";
+"Home" = "科普中国";
+"ForgetPassword" = "找回密码";
+"ChangePassword" = "修改密码";
+"BindCellPhone" = "绑定手机号";

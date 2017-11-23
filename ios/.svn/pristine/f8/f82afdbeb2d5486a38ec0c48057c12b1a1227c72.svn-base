@@ -1,0 +1,33 @@
+[
+ {
+ "at_id" : "AT201604301608271003",
+ "at_name_ch" : "头条资讯",
+ "at_name_en" : "THE HEADLINES"
+ },
+ {
+ "at_id" : "AT201604301608271004",
+ "at_name_ch" : "校园e站",
+ "at_name_en" : "schoolyard"
+ },
+ {
+ "at_id" : "AT201604301608271005",
+ "at_img_url_v" : "http://7xqg8c.com1.z0.glb.clouddn.com/PI201611141830552220",
+ "at_name_ch" : "社区e站",
+ "at_name_en" : "community"
+ },
+ {
+ "at_id" : "AT201604301608271006",
+ "at_name_ch" : "乡村e站",
+ "at_name_en" : "village"
+ },
+ {
+ "at_id" : "AT201604301611101007",
+ "at_name_ch" : "科技",
+ "at_name_en" : "SCINECE"
+ },
+ {
+ "at_id" : "AT201604301612241011",
+ "at_name_ch" : "青少年",
+ "at_name_en" : "TEENAGERS"
+ }
+ ]

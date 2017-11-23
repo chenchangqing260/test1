@@ -1,0 +1,938 @@
+//
+//  AppDelegate.m
+//  ScienceChina
+//
+//  Created by Ellison on 16/4/28.
+//  Copyright © 2016年 sevenplus. All rights reserved.
+//
+
+#import "AppDelegate.h"
+#import "HomePagerViewController.h"
+#import "CategoryViewController.h"
+#import "ActivityNewViewController.h"
+#import "MyViewController.h"
+#import "RDVTabBarItem.h"
+#import "JTNavigationController.h"
+#import "IQKeyboardManager.h"
+#import "SVProgressHUD.h"
+#import "HomePageViewController.h"
+#import "SubCategoryViewController.h"
+#import "TopicListViewController.h"
+#import "InfoCategory.h"
+#import "CoreLaunchLite.h"
+#import "WXApi.h"
+#import <TencentOpenAPI/TencentOAuth.h>
+#import <TencentOpenAPI/QQApiInterface.h>
+#import "EAIntroView.h"
+#import "EAIntroPage.h"
+#import "UMessage.h"
+#import "UMMobClick/MobClick.h"//友盟统计
+#import "ChannelContainerViewController.h"
+#import "LeftListViewController.h"
+#import "HomeTabBarController.h"
+#import "QuesMainViewController.h"
+#import "VideoListViewController.h"
+#import <tingyunApp/NBSAppAgent.h>
+#import <MeiQiaSDK/MQManager.h>
+#import "MQChatViewManager.h"
+
+#import <CoreMotion/CoreMotion.h>
+#import "MyWelcomView.h"
+#import "UIView+Category.h"
+
+@interface AppDelegate ()<WXApiDelegate,QQApiInterfaceDelegate,WeiboSDKDelegate,EAIntroDelegate>
+
+@property (nonatomic, strong) HomePagerViewController *firstViewController;
+@property (strong, nonatomic) UIView *launchView;
+
+@end
+
+@implementation AppDelegate
+
+- (void)DismissLaunch {
+
+    CABasicAnimation *anim = [CABasicAnimation animationWithKeyPath:@"transform.scale"];
+    anim.duration = 0.5;
+    anim.toValue = @(2.5);
+    [self.launchView.layer addAnimation:anim forKey:nil];
+    
+    [UIView animateWithDuration:1 animations:^{
+        [self.window.rootViewController.navigationController setNavigationBarHidden:NO animated:NO];
+        self.launchView.alpha = 0;
+    } completion:^(BOOL finished) {
+        [self.launchView removeFromSuperview];
+    }];
+    
+}
+
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    
+    // 1、设置主Window
+    self.window = [[UIWindow alloc] initWithFrame:kSCREEN_BOUNDS];
+    self.window.backgroundColor = [UIColor whiteColor];
+    [self.window makeKeyAndVisible];
+    
+    // 2、初始化控件
+    [self settingSVProgressHUD];
+    [self setIQKeyBoardConfig];
+    [self initThirdPartyAplication:application didFinishLaunchingWithOptions:launchOptions];
+    
+    // 3、注册通知
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(handleAndSaveDataAfterLogin:) name:kNOTOICE_SAVEDATAAFTERLOGIN object:nil];
+    //[[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(checkAutoLogin:) name:kNOTOICE_CHECKAUTOLOGIN object:nil];
+    [self checkAutoLogin:nil];
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(reloadHomePage:) name:kNOTOICE_RELOADHOMEPAGE object:nil];
+    
+    // 4、注册消息推送，使用友盟推送
+    [self initUMessageSDK:launchOptions];
+    //    [self registerPushMessage];
+    
+    // 5、设置Tabbar
+    [self setupViewControllers];
+    
+    // 6、获取设备唯一标识
+    [self getUUID];
+    
+    //启动页
+    [self loadLaunchView];
+    
+    // 7、引导页-暂时不显示
+    //    NSUserDefaults *settings = [NSUserDefaults standardUserDefaults];
+    //    NSObject *obj = [settings objectForKey:kAppCurVersion];
+    //
+    //    if (!obj) {
+    //        // 当前版本若没有显示过则显示出来，若显示过则不显示了
+    //        [self guideView];
+    //    }
+    
+    // 8、启动页
+//    [CoreLaunchLite animWithWindow:self.window image:nil];
+    
+    // 9、清除之后进入APP的话，可设置去查看有无广告
+    NSUserDefaults* setting = [NSUserDefaults standardUserDefaults];
+    [setting setObject:@"show" forKey:@"advertImgView"];
+    [setting synchronize];
+    
+    
+    //百分点精准推送SDK 自身初始化及相关 appkey, 渠道等参数的设置
+    [BDIAgent bdiInit: @{@"appkey":@"fa9bcfe4c47338f5cc41ca6c7fce4c27",
+                         @"channel": @"App Store",
+                         @"report_crash":@"No" }];
+    // 美洽接入
+    [MQManager initWithAppkey:@"d70b21192f0f1e0843a9b5c2a7d2ed3a" completion:^(NSString *clientId, NSError *error) {
+    }];
+    
+    //友盟统计
+    [self UMMobClick];
+    
+    //2.1.2以下版本需将代码添加到application:didFinishLaunchingWithOptions中
+    [NBSAppAgent startWithAppID:@"b8ae10e4308c41ac8bbb1d4a9fb7a1de"];
+    [NBSAppAgent leaveBreadcrumb:@"didFinishLaunchingWithOptions"];//设置面包屑
+    
+    return YES;
+}
+
+#pragma mark - LaunchView
+- (void)loadLaunchView {
+    [self.window.rootViewController.navigationController setNavigationBarHidden:YES animated:NO];
+    
+    //启动页
+    MyWelcomView *welcomView = [[NSBundle mainBundle] loadNibNamed:@"MyWelcomView" owner:self options:nil].firstObject;
+    [self.window.rootViewController.view addSubview:welcomView];
+    welcomView.frame = self.window.bounds;
+    self.launchView = welcomView;
+    
+    
+    [self performSelector:@selector(DismissLaunch) withObject:nil afterDelay:3];
+    
+ 
+    [UIView transitionWithView:self.launchView duration:15.0f options:UIViewAnimationOptionTransitionCrossDissolve animations:^{
+
+    } completion:^(BOOL finished) {
+        
+    }];
+}
+
+#pragma mark - RootView And Tabbar
+- (void)setupViewControllers {
+    [self loadHomePageData:NO];
+    
+    /*
+     //tabbar
+     HomeTabBarController *tbc = [[HomeTabBarController alloc] init];
+     LeftListViewController *leftController1 = [[LeftListViewController alloc] init];
+     
+     DDMenuController *menuController1 = [[DDMenuController alloc] init];
+     menuController1.rootViewController =tbc;
+     menuController1.leftViewController = leftController1;
+     
+     menuController1.homeTab = tbc;
+     
+     _menuController = menuController1;
+     self.window.rootViewController = menuController1;
+     
+     return;
+     */
+    
+    //第一版
+    //        ChannelContainerViewController *rootVC = [[ChannelContainerViewController alloc] init];
+    //        LeftListViewController *leftController = [[LeftListViewController alloc] init];
+    //        JTNavigationController *rootNav = [[JTNavigationController alloc] initWithRootViewController:rootVC];
+    //
+    //        DDMenuController *menuController = [[DDMenuController alloc] init];
+    //        menuController.rootViewController =rootNav;
+    //        menuController.leftViewController = leftController;
+    //
+    //        menuController.mainVC = rootVC;
+    //        menuController.mainNav = rootNav;
+    //
+    //        _menuController = menuController;
+    //        self.window.rootViewController = menuController;
+    //        return;
+    
+    ChannelContainerViewController *rootVC = [[ChannelContainerViewController alloc] init];
+    UIViewController *firstNavigationController = [[JTNavigationController alloc]
+                                                   initWithRootViewController:rootVC];
+    
+    VideoListViewController *secondViewController = [[VideoListViewController alloc] init];
+    UIViewController *secondNavigationController = [[JTNavigationController alloc]
+                                                    initWithRootViewController:secondViewController];
+    
+//    QuesMainViewController *thirdViewController = [[QuesMainViewController alloc] init];
+//    UIViewController *thirdNavigationController = [[JTNavigationController alloc]
+//                                                    initWithRootViewController:thirdViewController];
+    
+    ActivityNewViewController *fourthViewController = [[ActivityNewViewController alloc] init];
+    UIViewController *fourthNavigationController = [[JTNavigationController alloc]
+                                                   initWithRootViewController:fourthViewController];
+    
+    MyViewController *fiveViewController = [[MyViewController alloc] init];
+    UIViewController *fiveNavigationController = [[JTNavigationController alloc]
+                                                    initWithRootViewController:fiveViewController];
+    
+    self.tabBarController = [[RDVTabBarController alloc] init];
+    [self.tabBarController  setViewControllers:@[firstNavigationController,
+                                           secondNavigationController,
+                                           fourthNavigationController,
+                                           fiveNavigationController]];
+    
+    self.tabBarController .tabBar.translucent = YES;
+    self.window.rootViewController = self.tabBarController ;
+    [self customizeTabBarForController:self.tabBarController ];
+    
+}
+
+- (void)customizeTabBarForController:(RDVTabBarController *)tabBarController {
+    NSArray *tabBarItemImages = @[@"icon_home",@"icon_video",@"icon_activity",@"icon_my"];
+    
+    NSUserDefaults *settings = [NSUserDefaults standardUserDefaults];
+//    [settings setObject:@"1" forKey:kUserDefaultKeyIsShowTabbarRed];
+    NSString* isShowTabbarRed = [settings objectForKey:kUserDefaultKeyIsShowTabbarRed];
+    
+//    NSLog(@"%f---iphoneheight---",[UIScreen mainScreen].bounds.size.height);
+
+    NSInteger index = 0;
+    for (RDVTabBarItem *item in [[tabBarController tabBar] items]) {
+        item.imagePositionAdjustment = UIOffsetMake(0, 1);
+//        [item setBackgroundColor:[UIColor colorWithHex:0xf5f5f5 alpha:1]];
+        [item setBackgroundColor:[UIColor whiteColor]];
+        UIImage *selectedimage = [UIImage imageNamed:[NSString stringWithFormat:@"%@",[tabBarItemImages objectAtIndex:index]]];
+        UIImage *unselectedimage = [UIImage imageNamed:[NSString stringWithFormat:@"%@_normal",[tabBarItemImages objectAtIndex:index]]];
+        [item setFinishedSelectedImage:selectedimage withFinishedUnselectedImage:unselectedimage];
+    
+//        if(index == 3&&![isShowTabbarRed isEqualToString:@"1"]){
+        if(index == 3){
+//            //新建小红点
+            CGFloat badgeViewWH = 8;
+            CGRect  badgeViewFrame = CGRectMake(0, 0, badgeViewWH, badgeViewWH);
+            _badgeview1 = [[UIView alloc] initWithFrame:badgeViewFrame];
+            _badgeview1.tag = 1314 + index;
+            _badgeview1.layer.cornerRadius = badgeViewFrame.size.width / 2; //圆形
+            _badgeview1.backgroundColor = [UIColor redColor];//颜色：红色
+            CGRect tabFrame = item.frame;
+
+            //确定小红点的位置
+            float percentX = (index + 0.6) / 4;
+            
+            if([UIScreen mainScreen].bounds.size.height==kHEIGHT_568){
+                CGFloat x = ceilf(percentX * tabFrame.size.width+53);
+                CGFloat y = ceilf(0.1 * tabFrame.size.height+5);
+                badgeViewFrame.origin = CGPointMake(x, y);
+            }else{
+                CGFloat x = ceilf(percentX * tabFrame.size.width+63);
+                CGFloat y = ceilf(0.1 * tabFrame.size.height+5);
+                badgeViewFrame.origin = CGPointMake(x, y);
+            }
+            
+            _badgeview1.frame = badgeViewFrame;
+            [item addSubview:_badgeview1];
+            
+            if([isShowTabbarRed isEqualToString:@"1"]){
+                //已注册为点击科普员认证补充资料，直接默认显示红点
+                  _badgeview1.hidden = NO;
+            }else{
+                //为注册或已注册已点击科普员认证补充资料，默认不显示红点
+                  _badgeview1.hidden = YES;
+            }
+
+        }
+ 
+        index++;
+    }
+}
+
+#pragma mark - 引导页
+//- (void)guideView{
+//    EAIntroPage *page1 = [EAIntroPage page];
+//    page1.bgImage = [UIImage imageNamed:@"guidebg1"];
+//    page1.customView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"guide1"]];
+//    page1.customView.frame = kSCREEN_BOUNDS;
+//
+//    EAIntroPage *page2 = [EAIntroPage page];
+//    page2.bgImage = [UIImage imageNamed:@"guidebg2"];
+//    page2.customView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"guide2"]];
+//    page2.customView.frame = kSCREEN_BOUNDS;
+//
+//    EAIntroPage *page3 = [EAIntroPage page];
+//    page3.bgImage = [UIImage imageNamed:@"guidebg3"];
+//    page3.customView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"guide3"]];
+//    page3.customView.frame = kSCREEN_BOUNDS;
+//
+//    EAIntroView *intro = [[EAIntroView alloc] initWithFrame:kSCREEN_BOUNDS];
+//    intro.delegate = self;
+//
+//    intro.skipButton.alpha = 0.f;
+//    intro.skipButton.enabled = NO;
+//    page3.onPageDidAppear = ^{
+//        intro.skipButton.enabled = YES;
+//        [UIView animateWithDuration:0.3f animations:^{
+//            intro.skipButton.alpha = 1.f;
+//        }];
+//    };
+//    page3.onPageDidDisappear = ^{
+//        intro.skipButton.enabled = NO;
+//        [UIView animateWithDuration:0.3f animations:^{
+//            intro.skipButton.alpha = 0.f;
+//        }];
+//    };
+//
+//    [intro setPages:@[page1,page2,page3]];
+//    [intro showInView:self.window animateDuration:0];
+//}
+//
+//// EAIntroView delegate
+//- (void)introDidFinish:(EAIntroView *)introView {
+//    NSUserDefaults *settings = [NSUserDefaults standardUserDefaults];
+//    [settings setObject:@"show" forKey:kAppCurVersion];
+//    [settings synchronize];
+//
+//    // 显示首页广告页
+//    [[NSNotificationCenter defaultCenter]postNotificationName:@"showAdvertImgView" object:nil];
+//}
+
+#pragma mark - 控件初始化
+// 设置SVProgressHUD
+- (void)settingSVProgressHUD{
+    [SVProgressHUD setDefaultStyle:SVProgressHUDStyleDark];
+    [SVProgressHUD setDefaultAnimationType:SVProgressHUDAnimationTypeNative];
+    [SVProgressHUD setDefaultMaskType:SVProgressHUDMaskTypeGradient];
+    [SVProgressHUD setCornerRadius:5];
+    [SVProgressHUD setMinimumDismissTimeInterval:2];
+}
+
+// 设置键盘
+- (void)setIQKeyBoardConfig{
+    [[IQKeyboardManager sharedManager] setEnable:YES];
+    [[IQKeyboardManager sharedManager] setEnableAutoToolbar:NO];
+    [[IQKeyboardManager sharedManager] setShouldResignOnTouchOutside:YES];
+}
+
+// 设置弹出选择框
+- (void)setMMPopupWindowConfig{
+    [MMPopupWindow sharedWindow].touchWildToHide = YES;
+    MMAlertViewConfig *alertConfig = [MMAlertViewConfig globalConfig];
+    MMSheetViewConfig *sheetConfig = [MMSheetViewConfig globalConfig];
+    
+    alertConfig.defaultTextOK = @"好";
+    alertConfig.defaultTextCancel = @"取消";
+    alertConfig.defaultTextConfirm = @"确认";
+    alertConfig.buttonFontSize = 15;
+    alertConfig.titleFontSize = 16;
+    alertConfig.detailFontSize = 14;
+    
+    sheetConfig.defaultTextCancel = @"取消";
+    sheetConfig.titleFontSize = 12;
+    sheetConfig.buttonFontSize = 15;
+}
+
+// 初始化友盟消息推送
+- (void)initUMessageSDK:(NSDictionary *)launchOptions{
+    //设置 AppKey 及 LaunchOptions
+    [UMessage startWithAppkey:kUMAppKey launchOptions:launchOptions];
+    
+    //1.3.0版本开始简化初始化过程。如不需要交互式的通知，下面用下面一句话注册通知即可。
+    [UMessage registerForRemoteNotifications];
+    
+    /**  如果你期望使用交互式(只有iOS 8.0及以上有)的通知，请参考下面注释部分的初始化代码
+     //register remoteNotification types （iOS 8.0及其以上版本）
+     UIMutableUserNotificationAction *action1 = [[UIMutableUserNotificationAction alloc] init];
+     action1.identifier = @"action1_identifier";
+     action1.title=@"Accept";
+     action1.activationMode = UIUserNotificationActivationModeForeground;//当点击的时候启动程序
+     
+     UIMutableUserNotificationAction *action2 = [[UIMutableUserNotificationAction alloc] init];  //第二按钮
+     action2.identifier = @"action2_identifier";
+     action2.title=@"Reject";
+     action2.activationMode = UIUserNotificationActivationModeBackground;//当点击的时候不启动程序，在后台处理
+     action2.authenticationRequired = YES;//需要解锁才能处理，如果action.activationMode = UIUserNotificationActivationModeForeground;则这个属性被忽略；
+     action2.destructive = YES;
+     
+     UIMutableUserNotificationCategory *actionCategory = [[UIMutableUserNotificationCategory alloc] init];
+     actionCategory.identifier = @"category1";//这组动作的唯一标示
+     [actionCategory setActions:@[action1,action2] forContext:(UIUserNotificationActionContextDefault)];
+     
+     NSSet *categories = [NSSet setWithObject:actionCategory];
+     
+     //如果默认使用角标，文字和声音全部打开，请用下面的方法
+     [UMessage registerForRemoteNotifications:categories];
+     
+     //如果对角标，文字和声音的取舍，请用下面的方法
+     //UIRemoteNotificationType types7 = UIRemoteNotificationTypeBadge|UIRemoteNotificationTypeAlert|UIRemoteNotificationTypeSound;
+     //UIUserNotificationType types8 = UIUserNotificationTypeAlert|UIUserNotificationTypeSound|UIUserNotificationTypeBadge;
+     //[UMessage registerForRemoteNotifications:categories withTypesForIos7:types7 withTypesForIos8:types8];
+     */
+    
+    //for log
+    [UMessage setLogEnabled:YES];
+}
+
+// 初始化第三方控件
+-(void)initThirdPartyAplication:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions{
+    // 1、微信注册
+    [WXApi registerApp:kWXApiKey withDescription:@"ChinaScience"];
+    
+    // 2、微博注册
+    [WeiboSDK enableDebugMode:YES];
+    [WeiboSDK registerApp:kWeiBoAppKey];
+}
+
+#pragma mark - Application
+- (void)applicationWillResignActive:(UIApplication *)application {
+    [BDIAgent  appWillResignActive];
+}
+
+- (void)applicationDidEnterBackground:(UIApplication *)application {
+    [BDIAgent appDidEnterBackground: application];
+    // 关闭美洽服务
+    [MQManager closeMeiqiaService];
+}
+
+- (void)applicationWillEnterForeground:(UIApplication *)application {
+    [BDIAgent appWillEnterForeground: application];
+    // 开启美洽服务
+    [MQManager openMeiqiaService];
+}
+
+- (void)applicationDidBecomeActive:(UIApplication *)application {
+    [[NSNotificationCenter defaultCenter]postNotificationName:kNOTOICE_REFRESH_SETTING object:nil];
+    [BDIAgent  appDidBecomeActive];
+    
+    // 检查版本更新
+    [[WebAccessManager sharedInstance]getLatestVersion:^(WebResponse *response, NSError *error) {
+        if (response.success) {
+            
+            //判断今日是否已提醒过
+            if([response.data.is_prompt isEqualToString:@"1"]){
+                if(response.data.version){
+                    if ([kCurrentVersion compare:response.data.version.vs_name options:NSNumericSearch] == NSOrderedAscending) {
+
+                        //可以提示
+                        [self onCheckAppViersion:response.data.version.vs_title detail:response.data.version.descp isFORCIBLY_UPDATE:response.data.version.is_constraint];
+                    }
+
+                }
+
+            }
+            
+            
+        }else{
+            [SVProgressHUDUtil showErrorWithStatus:[error.userInfo objectForKey:@"errorMessage"]];
+        }
+    }];
+    
+    
+    }
+
+- (void)applicationWillTerminate:(UIApplication *)application {
+    [BDIAgent appWillTerminate:application];
+}
+
+#pragma mark - 注册消息推送
+//// 注册消息推送
+//- (void)registerPushMessage{
+//    // 1. iOS8 注册APNS
+//    UIApplication *application=[UIApplication sharedApplication];
+//    if ([application respondsToSelector:@selector(registerForRemoteNotifications)]) {
+//
+//        UIMutableUserNotificationAction *action = [[UIMutableUserNotificationAction alloc] init];
+//        action.title = @"查看消息";
+//        action.identifier = @"action1";
+//        action.activationMode = UIUserNotificationActivationModeForeground;
+//
+//        UIMutableUserNotificationCategory *category = [[UIMutableUserNotificationCategory alloc] init];
+//        category.identifier = @"alert";
+//        [category setActions:@[action] forContext:UIUserNotificationActionContextDefault];
+//
+//        UIUserNotificationType notificationTypes = UIUserNotificationTypeBadge | UIUserNotificationTypeSound | UIUserNotificationTypeAlert;
+//        UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:notificationTypes categories:[NSSet setWithObjects:category, nil]];
+//        [[UIApplication sharedApplication] registerUserNotificationSettings:settings];
+//
+//    } else {
+//        UIRemoteNotificationType notificationTypes = UIRemoteNotificationTypeBadge |
+//        UIRemoteNotificationTypeSound |
+//        UIRemoteNotificationTypeAlert;
+//        [[UIApplication sharedApplication] registerForRemoteNotificationTypes:notificationTypes];
+//    }
+//}
+//
+//- (void)application:(UIApplication *)application didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings {
+//    [application registerForRemoteNotifications];
+//}
+
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo
+{
+    [UMessage didReceiveRemoteNotification:userInfo];
+}
+
+- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
+{
+    NSString* device_token = [[[[deviceToken description] stringByReplacingOccurrencesOfString: @"<" withString: @""]                  stringByReplacingOccurrencesOfString: @">" withString: @""]                 stringByReplacingOccurrencesOfString: @" " withString: @""];
+    // 将设备信息和devicetoken保存
+    NSUserDefaults *defaults =[NSUserDefaults standardUserDefaults];
+    [defaults setObject:device_token forKey:@"device_token"];
+    [defaults synchronize];
+}
+
+// 注册deviceToken失败；此处失败，与SDK无关，一般是您的环境配置或者证书配置有误
+- (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error {
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"apns.failToRegisterApns", Fail to register apns)
+                                                    message:error.description
+                                                   delegate:nil
+                                          cancelButtonTitle:NSLocalizedString(@"ok", @"OK")
+                                          otherButtonTitles:nil];
+    [alert show];
+}
+
+
+#pragma mark - 自定义事件（包含通知事件、自定义的手势、按钮等点击事件）
+// 刷新首页数据
+- (void)reloadHomePage:(NSNotification*)notification{
+    [self loadHomePageData:YES];
+}
+
+- (void)loadHomePageData:(BOOL)isRefresh{
+    // 1、初始化视图
+    if (!self.firstViewController) {
+        self.firstViewController = [HomePagerViewController new];
+        self.firstViewController.isShowRightItem = YES;
+    }
+    
+    // 2、处理数据得到所有的标题
+    NSMutableArray *titles = [NSMutableArray new];
+    [titles addObject:@"科普中国"];
+    
+    // 3、获取有无可定制的分类
+    NSMutableArray* tempCategoryArray = [NSMutableArray new];
+    NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
+    NSMutableArray* collectArray = nil;
+    if ([MemberManager sharedInstance].isLogined) {
+        collectArray = [defaults objectForKey:kUserDefaultKeyCollectCategoryForUser([MemberManager sharedInstance].memberId)];
+    }else{
+        collectArray = [defaults objectForKey:kUserDefaultKeyCollectCategory];
+    }
+    if (collectArray) {
+        [collectArray enumerateObjectsUsingBlock:^(NSString *categoryStr, NSUInteger idx, BOOL * _Nonnull stop) {
+            NSArray* strArray = [categoryStr componentsSeparatedByString:@"~-"];
+            InfoCategory* category = [InfoCategory new];
+            category.at_id = strArray[0];
+            if (strArray[1]) {
+                category.at_name_ch = strArray[1];
+            }
+            if (strArray[2]) {
+                category.at_img_url = strArray[2];
+            }
+            if (strArray.count == 3) {
+                // 老数据，需要清空重新定制分类
+                if ([MemberManager sharedInstance].isLogined) {
+                    [defaults setObject:[NSMutableArray new] forKey:kUserDefaultKeyCollectCategoryForUser([MemberManager sharedInstance].memberId)];
+                }else{
+                    [defaults setObject:[NSMutableArray new] forKey:kUserDefaultKeyCollectCategory];
+                }
+                
+                [defaults synchronize];
+                return;
+            }else{
+                if (strArray[3]) {
+                    category.at_type = [NSString stringWithFormat:@"%@",strArray[3]];
+                }
+                [titles addObject:category.at_name_ch];
+                [tempCategoryArray addObject:category];
+            }
+        }];
+    }else{
+        // 初始化
+        if ([MemberManager sharedInstance].isLogined) {
+            [defaults setObject:[NSMutableArray new] forKey:kUserDefaultKeyCollectCategoryForUser([MemberManager sharedInstance].memberId)];
+        }else{
+            [defaults setObject:[NSMutableArray new] forKey:kUserDefaultKeyCollectCategory];
+        }
+        
+        [defaults synchronize];
+    }
+    
+    // 3.1、设置滑动视图
+    NSMutableArray *viewControllers = [NSMutableArray new];
+    [titles enumerateObjectsUsingBlock:^(NSString *title, NSUInteger idx, BOOL *stop) {
+        if (idx == 0) {
+            HomePageViewController *vc = [[HomePageViewController alloc] init];
+            vc.title = title;
+            [viewControllers addObject:vc];
+        }else{
+            InfoCategory* category = [tempCategoryArray objectAtIndex:(idx - 1)];
+            if ([category.at_type isEqualToString:@"2"]) {
+                // 专题分类
+                TopicListViewController *vc = [TopicListViewController new];
+                vc.at_id = category.at_id;
+                vc.title = title;
+                [viewControllers addObject:vc];
+            }else{
+                SubCategoryViewController *vc = [[SubCategoryViewController alloc] init];
+                vc.title = title;
+                vc.category = [tempCategoryArray objectAtIndex:(idx - 1)];
+                [viewControllers addObject:vc];
+            }
+        }
+    }];
+    
+    self.firstViewController.didChangedPageCompleted = ^(NSInteger cuurentPage, NSString *title) {
+        if (cuurentPage != 0) {
+            SubCategoryViewController *vc = viewControllers[cuurentPage];
+            [vc loadeDataForSubView];
+        }
+    };
+    
+    self.firstViewController.viewControllers = viewControllers;
+    
+    if (isRefresh) {
+        [self.firstViewController reloadData];
+    }
+}
+
+// 登录成功之后需要做的事情
+- (void)handleAndSaveDataAfterLogin:(NSNotification*)notification{
+    NSDictionary* dict = notification.userInfo;
+    Member* member = [dict objectForKey:@"member"];
+    if (member){
+        // 返回成功
+        [[MemberManager sharedInstance] cacheMemberInfoWithMember:member];
+        
+        // 更新存储个人信息
+        [[MemberManager sharedInstance] updateCacheLoginCredentialForUser:member];
+        
+        // 刷新个人信息页面
+        [[NSNotificationCenter defaultCenter]postNotificationName:kNOTOICE_UPDATE_PERSINAL_INFO object:nil];
+        
+        // 更新My页面信息
+        [[NSNotificationCenter defaultCenter]postNotificationName:kNOTOICE_UPDATE_MYVIEW_INFO object:nil];
+    }
+}
+
+// 进行自动登录
+- (void)checkAutoLogin:(NSNotification*)notification
+{
+    if (![[MemberManager sharedInstance] isLogined]) {
+        NSDictionary *loginCredential = (NSDictionary *)[[NSUserDefaults standardUserDefaults] objectForKey:kUserDefaultKeyLoginCredential];
+        if (loginCredential && ![loginCredential isKindOfClass:[NSNull class]]) {
+            NSString *telephone = [loginCredential objectForKey:@"account"];
+            NSString *password = [loginCredential objectForKey:@"password"];
+            NSString *channel = [loginCredential objectForKey:@"channel"];
+            NSString *autocode = [loginCredential objectForKey:@"autocode"];
+            NSString *memberName = [loginCredential objectForKey:@"memberName"];
+            NSString *memberURL = [loginCredential objectForKey:@"memberURL"];
+            
+            if (channel && [channel isEqualToString:@"4"]) {
+                [[WebAccessManager sharedInstance]loginWithTelephone:telephone  password:password completion:^(WebResponse *response, NSError *error) {
+                    if (response.success) {
+                        // 登录成功
+                        [MemberManager sharedInstance].score = response.data.score;
+                        Member *member = response.data.member;
+                        member.channel = @"4";
+                        member.autocode = nil;
+                        member.member_password = password;
+                        
+                        [[NSNotificationCenter defaultCenter]postNotificationName:kNOTOICE_SAVEDATAAFTERLOGIN object:nil userInfo:@{@"member":member}];
+                        [[NSNotificationCenter defaultCenter]postNotificationName:@"refreshMyStation" object:nil];
+                        [[NSNotificationCenter defaultCenter]postNotificationName:@"refreshCollectionData" object:nil];
+                        
+                        [[NSUserDefaults standardUserDefaults] removeObjectForKey:kUserDefaultKeyCollectCategory];
+                        [[NSUserDefaults standardUserDefaults] removeObjectForKey:kUserDefaultKeyCollectCategoryForUser([MemberManager sharedInstance].memberId)];
+                        
+                        [[NSUserDefaults standardUserDefaults]setObject:response.data.member.member_id forKey:@"memid"];
+                        [[NSUserDefaults standardUserDefaults]synchronize];
+                        
+                        //登录成功，数据统计
+                        [self onaddUser];
+                        
+                    }else{
+                        // 请求返回失败
+                        [[MemberManager sharedInstance]logout];
+                    }
+                }];
+            }else{
+                // 第三方登录
+                if (channel && autocode) {
+                    [[WebAccessManager sharedInstance]loginWithThirdPartyWithChannel:channel authcode:autocode  memberName:memberName imageURL:memberURL completion:^(WebResponse *response, NSError *error) {
+                        if (response.success) {
+                            // 登录成功
+                            [MemberManager sharedInstance].score = nil;
+                            Member *member = response.data.member;
+                            member.channel = channel;
+                            member.autocode = autocode;
+                            
+                            [[NSNotificationCenter defaultCenter]postNotificationName:kNOTOICE_SAVEDATAAFTERLOGIN object:nil userInfo:@{@"member":member}];
+                            [[NSNotificationCenter defaultCenter]postNotificationName:@"refreshMyStation" object:nil];
+                            [[NSUserDefaults standardUserDefaults] removeObjectForKey:kUserDefaultKeyCollectCategory];
+                            [[NSUserDefaults standardUserDefaults] removeObjectForKey:kUserDefaultKeyCollectCategoryForUser([MemberManager sharedInstance].memberId)];
+                            [[NSNotificationCenter defaultCenter]postNotificationName:@"refreshCollectionData" object:nil];
+                            
+                            //登录成功，数据统计
+                            [self onaddUser];
+                            
+                            
+                        }else{
+                            // 自动登录失败，则做退出操作，将数据清空
+                            [[MemberManager sharedInstance]logout];
+                        }
+                    }];
+                }
+            }
+        }
+    }
+}
+
+// 获取设备唯一标识
+- (void)getUUID{
+    NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
+    NSString* unique_identifier = [defaults objectForKey:@"unique_identifier"];
+    
+    if (!unique_identifier) {
+        NSString *UUIDStr = [[[UIDevice currentDevice] identifierForVendor] UUIDString];
+        [defaults setObject:UUIDStr forKey:@"unique_identifier"];
+        [defaults synchronize];
+    }
+}
+-(void)onaddUser{
+    Member *member = [[MemberManager sharedInstance] getMember];
+    //登录成功
+    [BDIDataStatistics onAddUserWithUserId:member.member_id];
+}
+
+
+-(void)onCheckAppViersion:(NSString*)title detail:(NSString*)detail isFORCIBLY_UPDATE:(NSString*)isFORCIBLY_UPDATE{
+    
+    MMAlertView *alertView = [[MMAlertView alloc]init];
+    
+        // 有新版本，直接提示更新
+        MMPopupItemHandler block = ^(NSInteger index){
+            
+            //是否强制更新
+            if([isFORCIBLY_UPDATE isEqualToString:@"1"]){
+                //强制更新
+                if (index == 0) {
+                    // 跳转APPStore
+                    NSString *iTunesString = [NSString stringWithFormat:@"https://itunes.apple.com/app/id%@", kAppleId];
+                    NSURL *iTunesURL = [NSURL URLWithString:iTunesString];
+                    [[UIApplication sharedApplication] openURL:iTunesURL];
+                }
+            }else{
+                //不强制更新
+                if (index == 1) {
+                    // 跳转APPStore
+                    NSString *iTunesString = [NSString stringWithFormat:@"https://itunes.apple.com/app/id%@", kAppleId];
+                    NSURL *iTunesURL = [NSURL URLWithString:iTunesString];
+                    [[UIApplication sharedApplication] openURL:iTunesURL];
+                }
+                
+                if (index == 0) {
+                    [alertView hide];
+                    //保存忽略日志
+                     [[WebAccessManager sharedInstance]saveVersionLog:^(WebResponse *response, NSError *error) {
+                         
+                     }];
+                }
+            }
+        };
+        
+        //是强制更新
+        if([isFORCIBLY_UPDATE isEqualToString:@"1"]){
+            // 提示
+            NSArray *items =
+            @[MMItemMake(@"立即升级", MMItemTypeHighlight, block)];
+            
+            alertView = [[MMAlertView alloc] initWithTitle:title detail:detail items:items];
+        }else{
+            // 提示
+            NSArray *items =
+            @[MMItemMake(@"暂不升级", MMItemTypeHighlight, block),MMItemMake(@"立即升级", MMItemTypeHighlight, block)];
+            
+            alertView = [[MMAlertView alloc] initWithTitle:title detail:detail items:items];
+        }
+        
+        alertView.attachedView.mm_dimBackgroundBlurEnabled = YES;
+        alertView.attachedView.mm_dimBackgroundBlurEffectStyle = UIBlurEffectStyleLight;
+        [alertView show];
+}
+
+
+// 检查版本更新
+-(void)onCheckViersion{
+    NSString *storeString = [NSString stringWithFormat:@"http://itunes.apple.com/lookup?id=%@", kAppleId];
+    NSURL *storeURL = [NSURL URLWithString:storeString];
+    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:storeURL];
+    [request setHTTPMethod:@"GET"];
+    NSOperationQueue *queue = [[NSOperationQueue alloc] init];
+    [NSURLConnection sendAsynchronousRequest:request queue:queue completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+        if ( [data length] > 0 && !error ) { // Success
+            NSDictionary *appData = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:nil];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                NSArray *versionsInAppStore = [[appData valueForKey:@"results"] valueForKey:@"version"];
+                if ( ![versionsInAppStore count] ) { // No versions of app in AppStore
+                    return;
+                } else {
+                    
+                    NSString *currentAppStoreVersion = [versionsInAppStore objectAtIndex:0];
+                    if ([kCurrentVersion compare:currentAppStoreVersion options:NSNumericSearch] == NSOrderedAscending) {
+                        // 有新版本，直接提示更新
+                        MMPopupItemHandler block = ^(NSInteger index){
+                            if (index == 0) {
+                                // 跳转APPStore
+                                NSString *iTunesString = [NSString stringWithFormat:@"https://itunes.apple.com/app/id%@", kAppleId];
+                                NSURL *iTunesURL = [NSURL URLWithString:iTunesString];
+                                [[UIApplication sharedApplication] openURL:iTunesURL];
+                            }
+                        };
+                        // 提示
+                        NSArray *items =
+                        @[MMItemMake(@"好", MMItemTypeHighlight, block)];
+                        
+                        MMAlertView *alertView = [[MMAlertView alloc] initWithTitle:@"发现新版本" detail:@"您当前版本过低，请更新版本！" items:items];
+                        alertView.attachedView.mm_dimBackgroundBlurEnabled = YES;
+                        alertView.attachedView.mm_dimBackgroundBlurEffectStyle = UIBlurEffectStyleLight;
+                        [alertView show];
+                    } else {}
+                }
+            });
+        }
+    }];
+}
+
+#pragma mark  友盟统计
+-(void)UMMobClick{
+    UMConfigInstance.appKey = kUMAppKey;
+    UMConfigInstance.channelId = @"App Store";
+    [MobClick startWithConfigure:UMConfigInstance];//配置以上参数后调用此方法初始化SDK！
+}
+#pragma mark - Third Open SDK HandleURL QQ,微博,微信,FB回调
+-(BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation{
+    if ([TencentOAuth HandleOpenURL:url]) {
+        return YES;
+    }
+    
+    if ([WeiboSDK handleOpenURL:url delegate:self]) {
+        return YES;
+    }
+    
+    if([QQApiInterface handleOpenURL:url delegate:self]){
+        return YES;
+    }
+    
+    if ([WXApi handleOpenURL:url delegate:self]) {
+        return YES;
+    }
+    
+    return YES;
+}
+
+- (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url{
+    if ([TencentOAuth HandleOpenURL:url]) {
+        return YES;
+    }
+    
+    if ([WeiboSDK handleOpenURL:url delegate:self]) {
+        return YES;
+    }
+    
+    if([QQApiInterface handleOpenURL:url delegate:self]){
+        return YES;
+    }
+    
+    return  [WXApi handleOpenURL:url delegate:self];
+}
+
+-(void) onReq:(BaseReq*)req{
+    
+}
+
+-(void) onResp:(BaseResp*)resp{
+    if (([resp isKindOfClass:[SendAuthResp class]] || [resp isKindOfClass:[SendMessageToWXResp class]]) && self.wxDelegate) {
+        [self.wxDelegate onResp:resp];
+    }else if([resp isKindOfClass:[QQBaseResp class]]){
+        [self.qqApiInterfaceDelegate onResp:(QQBaseResp *)resp];
+    }
+}
+
+- (void)isOnlineResponse:(NSDictionary *)response{
+    
+}
+
+- (void)didReceiveWeiboRequest:(WBBaseRequest *)request{
+    
+}
+
+- (void)didReceiveWeiboResponse:(WBBaseResponse *)response{
+    [self.weiboDelegate didReceiveWeiboResponse:response];
+}
+
+#pragma CATransition动画实现
+- (void) transitionWithType:(NSString *) type WithSubtype:(NSString *) subtype ForView : (UIView *) view
+{
+    //创建CATransition对象
+    CATransition *animation = [CATransition animation];
+    
+    //设置运动时间
+    animation.duration = 0.7f;
+    
+    //设置运动type
+    animation.type = type;
+    if (subtype != nil) {
+        
+        //设置子类
+        animation.subtype = subtype;
+    }
+    
+    //设置运动速度
+    animation.timingFunction = UIViewAnimationOptionCurveEaseInOut;
+    
+    [view.layer addAnimation:animation forKey:@"animation"];
+}
+- (void) animationWithView : (UIView *)view WithAnimationTransition : (UIViewAnimationTransition) transition
+{
+    [UIView animateWithDuration:0.7f animations:^{
+        [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
+        [UIView setAnimationTransition:transition forView:view cache:YES];
+    }];
+}
++(AppDelegate *)appdelegate{
+    return (AppDelegate *)[UIApplication sharedApplication].delegate;
+}
+@end

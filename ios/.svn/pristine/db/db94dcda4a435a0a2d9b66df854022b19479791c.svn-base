@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11542" systemVersion="15G31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_0" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11524"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="KGk-i7-Jjw" customClass="ESearchTitleCell">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="40"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+                <rect key="frame" x="0.0" y="0.0" width="320" height="39"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="EpO-4x-pZZ" userLabel="ContentView">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="40"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kOa-kD-rCv" userLabel="LeftLine">
+                                <rect key="frame" x="0.0" y="10" width="3" height="20"/>
+                                <color key="backgroundColor" red="0.20000000000000001" green="0.81176470590000005" blue="0.85490196080000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="3" id="47n-Xn-rZ1"/>
+                                </constraints>
+                            </view>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="搜索历史" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ggQ-P4-qsL">
+                                <rect key="frame" x="10" y="11" width="60" height="18"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                <color key="textColor" red="0.1333333333" green="0.1333333333" blue="0.1333333333" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="VvI-ps-Fgm">
+                                <rect key="frame" x="220" y="-1" width="100" height="41"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="100" id="6gu-7T-Tbi"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                <inset key="titleEdgeInsets" minX="5" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="5" maxY="0.0"/>
+                                <state key="normal" title="清空记录" image="垃圾桶">
+                                    <color key="titleColor" red="0.51764705879999995" green="0.51764705879999995" blue="0.51764705879999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                </state>
+                                <connections>
+                                    <action selector="clickCleanBtn:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="Rc3-8d-rRU"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstAttribute="bottom" secondItem="kOa-kD-rCv" secondAttribute="bottom" constant="10" id="JDz-Wc-Dh9"/>
+                            <constraint firstItem="VvI-ps-Fgm" firstAttribute="height" secondItem="EpO-4x-pZZ" secondAttribute="height" id="OxB-OO-qx5"/>
+                            <constraint firstAttribute="trailing" secondItem="VvI-ps-Fgm" secondAttribute="trailing" id="XwS-Dt-YeQ"/>
+                            <constraint firstItem="ggQ-P4-qsL" firstAttribute="leading" secondItem="EpO-4x-pZZ" secondAttribute="leading" constant="10" id="j1i-xy-J0f"/>
+                            <constraint firstItem="kOa-kD-rCv" firstAttribute="top" secondItem="EpO-4x-pZZ" secondAttribute="top" constant="10" id="kDC-gx-H3D"/>
+                            <constraint firstItem="VvI-ps-Fgm" firstAttribute="centerY" secondItem="EpO-4x-pZZ" secondAttribute="centerY" id="ksL-ya-0Ad"/>
+                            <constraint firstItem="ggQ-P4-qsL" firstAttribute="centerY" secondItem="EpO-4x-pZZ" secondAttribute="centerY" id="mdg-EQ-cg0"/>
+                            <constraint firstItem="kOa-kD-rCv" firstAttribute="leading" secondItem="EpO-4x-pZZ" secondAttribute="leading" id="rgb-MH-8bT"/>
+                        </constraints>
+                    </view>
+                </subviews>
+                <constraints>
+                    <constraint firstAttribute="bottom" secondItem="EpO-4x-pZZ" secondAttribute="bottom" id="7lU-9c-SER"/>
+                    <constraint firstItem="EpO-4x-pZZ" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" id="Y7k-6l-h7O"/>
+                    <constraint firstItem="EpO-4x-pZZ" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="ag0-kV-V5p"/>
+                    <constraint firstAttribute="trailing" secondItem="EpO-4x-pZZ" secondAttribute="trailing" id="iJB-U5-zfc"/>
+                </constraints>
+            </tableViewCellContentView>
+            <connections>
+                <outlet property="uiCleanHisBtn" destination="VvI-ps-Fgm" id="vZg-91-haQ"/>
+                <outlet property="uiTitleLab" destination="ggQ-P4-qsL" id="x6e-dQ-GmP"/>
+            </connections>
+        </tableViewCell>
+    </objects>
+    <resources>
+        <image name="垃圾桶" width="11" height="12"/>
+    </resources>
+</document>

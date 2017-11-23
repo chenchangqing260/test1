@@ -1,0 +1,552 @@
+//
+//  ChannelContainerViewController.m
+//  ScienceChina
+//
+//  Created by xuanyj on 16/10/31.
+//  Copyright © 2016年 sevenplus. All rights reserved.
+//
+
+#import "ChannelContainerViewController.h"
+#import "ChannelCollectionViewController.h"
+#import "LRLChannelEditController.h"
+#import "SubCategoryViewController.h"
+#import "SDCursorView.h"
+#import "ShowViewController.h"
+#import "ChannelModel.h"
+#import "InfoCategory.h"
+#import "AppDelegate.h"
+#import "ChannelModel.h"
+#import "LeftListViewController.h"
+#import "WeChatPublicNumberViewController.h"
+#import "BaseWebViewController.h"
+#import "IndexViewController.h"
+
+static NSString* default_font_size;//首页按钮字体大小
+
+@interface ChannelContainerViewController ()
+{
+    UIButton *_centerButton;
+    SDCursorView *_cursorView;
+    
+    NSMutableArray *_unCollectArray;  //未收藏的分类数据
+    NSMutableArray *_collectArray;  //收藏的分类数据
+    NSMutableArray *_allChannelArray;//所有频道列表
+    
+    BOOL _isShowingTuijian;
+}
+
+@property (nonatomic, strong) NSMutableArray *channelTitles;
+@property (nonatomic, strong) NSMutableArray<ChannelUnitModel *> *topChannelArr;
+@property (nonatomic, strong) NSMutableArray<ChannelUnitModel *> *bottomChannelArr;
+
+@end
+
+static NSString * const collectionCellID = @"ChannelCollectionCell";
+static NSString * const collectionViewSectionHeaderID = @"ChannelCollectionHeader";
+
+@implementation ChannelContainerViewController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    [self addNotify];
+    [self initdata];
+    
+    [self setupTitleViewWithTitle:nil];
+    [self setupNavView];
+    // ========= UPDATE BY ELLISON FOR 3TH改版 ==========
+    // [self setupCenterView];
+    // ========= UPDATE BY ELLISON FOR 3TH改版 END ==========
+    [self setupview];
+    [self setBtnFontSize];
+    //    //以前的接口
+    //    [self loadData];
+    
+    //二期接口
+    [self loadMyChannelsData];
+    [self loadAllChannelsData];
+    
+    //使用本地数据模拟频道
+    //        [self getAllChannel];
+    //        [self getMyChannel];
+    
+}
+-(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSString * fontSize = [defaults objectForKey:kUserDefaultKeyPreferedFontSize];
+    if (!fontSize) {
+        fontSize = @"Normal";
+    }
+    if(![fontSize isEqualToString:default_font_size]){
+        [self initdata];
+        [self setupTitleViewWithTitle:nil];
+        [self setupNavView];
+        [self setupview];
+        [self setBtnFontSize];
+        [self loadMyChannelsData];
+        [self loadAllChannelsData];
+    }
+
+}
+
+-(void)setBtnFontSize{
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSString * fontSize = [defaults objectForKey:kUserDefaultKeyPreferedFontSize];
+    if (!fontSize) {
+        fontSize = @"Normal";
+    }
+    default_font_size = fontSize;
+    if ([fontSize isEqualToString:@"Small"]){
+        _cursorView.selectedFont = [UIFont systemFontOfSize:17];
+        _cursorView.normalFont = [UIFont systemFontOfSize:14];
+    }else if([fontSize isEqualToString:@"Large"]){
+        _cursorView.selectedFont = [UIFont systemFontOfSize:26];
+        _cursorView.normalFont = [UIFont systemFontOfSize:23];
+    }else{
+        _cursorView.selectedFont = [UIFont systemFontOfSize:20];
+        _cursorView.normalFont = [UIFont systemFontOfSize:17];
+    }
+}
+
+-(void)addNotify{
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(saveMyChannelsData:) name:@"SaveMyChannel" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadMyChannelsData) name:@"refreshCollectionData" object:nil];
+    //**********test********/
+    //    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadData) name:@"GetMyChannel" object:nil];
+    //    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadData) name:@"refreshCollectionData" object:nil];
+    
+    //修改标题
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(resetTitleView:) name:@"ResetHomeTitleView" object:nil];
+}
+-(void)initdata{
+    _collectArray = [[NSMutableArray alloc] initWithCapacity:0];
+    _allChannelArray = [[NSMutableArray alloc] initWithCapacity:0];
+    _unCollectArray = [[NSMutableArray alloc] initWithCapacity:0];
+    _channelTitles = [[NSMutableArray alloc] initWithCapacity:0];
+    //self.title = @"科普中国";
+}
+-(void)resetTitleView:(NSNotification *)notification{
+    NSDictionary *dic = notification.userInfo;
+    NSInteger showBDIData = [dic[@"showBDIData"] integerValue];
+    if (showBDIData == 1) {
+        [self setupTitleViewWithTitle:@"推荐"];
+        _centerButton.hidden = YES;
+        _isShowingTuijian = YES;
+    }else{
+        [self setupTitleViewWithTitle:nil];
+        if (_cursorView.selectedIndex == 0) {
+            _centerButton.hidden = NO;
+            _isShowingTuijian = NO;
+        }else{
+            _centerButton.hidden = YES;
+        }
+    }
+}
+-(void)setupTitleViewWithTitle:(NSString *)title{
+    
+    if (title) {
+        UILabel *_titleLabelView = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 100, 44)];
+        _titleLabelView.font = FONT_17;
+        _titleLabelView.text = title;
+        _titleLabelView.textColor = [UIColor whiteColor];
+        _titleLabelView.textAlignment = NSTextAlignmentCenter;
+        _titleLabelView.backgroundColor = [UIColor clearColor];
+        self.navigationItem.titleView = _titleLabelView;
+    }else{
+        UIImageView *_titleImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 80, 20)];
+        _titleImageView.contentMode = UIViewContentModeScaleAspectFit;
+        _titleImageView.image = [UIImage imageNamed:@"title"];
+        self.navigationItem.titleView = _titleImageView;
+    }
+}
+-(void)setupNavView{
+    UIButton *leftNavBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    // [leftNavBtn setBackgroundColor:[UIColor redColor]];
+    leftNavBtn.frame = CGRectMake(0, 0, 35, 25);
+    //    [leftNavBtn setImage:[UIImage imageNamed:@"showLeftViewicon"] forState:UIControlStateNormal];
+    //    [leftNavBtn setImage:[UIImage imageNamed:@"showLeftViewicon"] forState:UIControlStateHighlighted];
+    //    [leftNavBtn setImageEdgeInsets:UIEdgeInsetsMake(0, -15, 0, 15)];
+//    [leftNavBtn setTitle:@"关注" forState:UIControlStateNormal];
+    [leftNavBtn setImage:[UIImage imageNamed:@"focus"] forState:UIControlStateNormal];
+    [leftNavBtn setImage:[UIImage imageNamed:@"focus"] forState:UIControlStateHighlighted];
+    [leftNavBtn setImageEdgeInsets:UIEdgeInsetsMake(0, -15, 0, 15)];
+    [leftNavBtn addTarget:self action:@selector(leftNavBtn) forControlEvents:UIControlEventTouchUpInside];
+    
+    UIButton *rightNavBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    rightNavBtn.frame = CGRectMake(0, 0, 35, 25);
+    [rightNavBtn setImage:[UIImage imageNamed:@"seach"] forState:UIControlStateNormal];
+    [rightNavBtn setImage:[UIImage imageNamed:@"seach"] forState:UIControlStateHighlighted];
+    [rightNavBtn setImageEdgeInsets:UIEdgeInsetsMake(0, 15, 0, -15)];
+    [rightNavBtn addTarget:self action:@selector(rightNavBtnAction) forControlEvents:UIControlEventTouchUpInside];
+    
+//    UIBarButtonItem *leftItem = [[UIBarButtonItem alloc]initWithCustomView:leftNavBtn];
+//    self.navigationItem.leftBarButtonItem = leftItem;
+    
+    UIBarButtonItem *rightItem = [[UIBarButtonItem alloc]initWithCustomView:rightNavBtn];
+    self.navigationItem.rightBarButtonItem = rightItem;
+}
+-(void)setupview{
+    self.view.backgroundColor = [UIColor whiteColor];//RGBCOLOR(242.0, 242.0, 242.0);
+    
+    _cursorView = [[SDCursorView alloc]initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.view.bounds), ChannelHeight)];
+//    _cursorView.selectedFont = [UIFont systemFontOfSize:20];//设置字体和颜色
+//    _cursorView.normalFont = [UIFont systemFontOfSize:17];
+    _cursorView.contentViewHeight = MAIN_SCREEN_HEIGHT-64-ChannelHeight;
+    _cursorView.parentViewController = self;//设置控件所在controller
+    _cursorView.showAddButton = YES;
+    
+    __weak ChannelContainerViewController *weakSelf = self;
+    __strong UIButton *weakcenterButton = _centerButton;
+    _cursorView.tapAddChannelBlock = ^(){
+        [weakSelf tapAdd];
+    };
+    _cursorView.didSelectedIndexBlock = ^(NSInteger selectedIndex){
+        if (selectedIndex == 0) {
+            //weakcenterButton.hidden = NO;
+            //[weakSelf setupTitleViewWithTitle:nil];
+            
+            if (_isShowingTuijian) {
+                weakcenterButton.hidden = YES;
+                [weakSelf setupTitleViewWithTitle:@"推荐"];
+            }else{
+                weakcenterButton.hidden = NO;
+                [weakSelf setupTitleViewWithTitle:nil];
+                
+            }
+        }else{
+            weakcenterButton.hidden = YES;
+            if (weakSelf.channelTitles && weakSelf.channelTitles.count > 0 && selectedIndex < weakSelf.channelTitles.count) {
+                [weakSelf setupTitleViewWithTitle:weakSelf.channelTitles[selectedIndex]];
+            } else {
+                [weakSelf setupTitleViewWithTitle:nil];
+            }
+            
+        }
+        
+        
+    };
+    [self.view addSubview:_cursorView];
+    
+   
+    
+    //    _cursorView.channelTitles = _channelTitles;
+    //    //设置所有子controller
+    //    NSMutableArray *contrors = [NSMutableArray array];
+    //    for (NSString *title in _channelTitles) {
+    //        ShowViewController *controller = [[ShowViewController alloc]init];
+    //        controller.content = title;
+    //        [contrors addObject:controller];
+    //    }
+    //    _cursorView.controllers = [contrors copy];
+    //    //属性设置完成后，调用此方法绘制界面
+    //    [_cursorView reloadPages];
+    
+}
+
+// ========= UPDATE BY ELLISON FOR 3TH改版 ==========
+//-(void)setupCenterView{
+//    NSString *_centerBackMain;
+//    NSString *_centerBackCollect;
+//    _centerBackMain = @"centerButton_首页";
+//    _centerBackCollect = @"centerButton_我的收藏";
+//    CGFloat buttonW = 75.0;
+//    CGFloat buttonH = 34.0;
+//    _centerButton = [UIButton buttonWithType:UIButtonTypeCustom];
+//    _centerButton.frame = CGRectMake((MAIN_SCREEN_WIDTH-75)/2.0, MAIN_SCREEN_HEIGHT-buttonH, buttonW, buttonH);
+//    [_centerButton setImage:[UIImage imageNamed:_centerBackCollect] forState:UIControlStateNormal];
+//    [_centerButton addTarget:self action:@selector(tapCenterButton:) forControlEvents:UIControlEventTouchUpInside];
+//    [self.navigationController.view addSubview:_centerButton];
+//
+//}
+// ========= UPDATE BY ELLISON FOR 3TH改版 END ==========
+
+//-(void)tapCenterButton:(UIButton *)sender{
+//    DDMenuController *menu = [AppDelegate appdelegate].menuController;
+//    LeftListViewController *left = (LeftListViewController *)menu.leftViewController;
+//    [left showMyAttention];
+//
+//    //    [[AppDelegate appdelegate] transitionWithType:@"rippleEffect" WithSubtype:kCATransitionFromBottom ForView:[AppDelegate appdelegate].window];
+//    [[AppDelegate appdelegate] animationWithView:[AppDelegate appdelegate].window WithAnimationTransition:UIViewAnimationTransitionFlipFromRight];
+//}
+//点击添加按钮的事件
+-(void)tapAdd{
+    [self getUnCollectChannel];
+    
+    LRLChannelEditController *channelEdit = [[LRLChannelEditController alloc] initWithTopDataSource:self.topChannelArr andBottomDataSource:self.bottomChannelArr andInitialIndex:_cursorView.currentIndex];
+    //编辑后的回调
+    __weak ChannelContainerViewController *weakSelf = self;
+    channelEdit.removeInitialIndexBlock = ^(NSMutableArray<ChannelUnitModel *> *topArr, NSMutableArray<ChannelUnitModel *> *bottomArr){
+        
+        if (![topArr isEqualToArray:weakSelf.topChannelArr]) {
+            
+            weakSelf.topChannelArr    = topArr;
+            weakSelf.bottomChannelArr = bottomArr;
+            DLog(@"删除了初始选中项的回调:\n保留的频道有: %@", topArr);
+            
+            [self getchannelTitles];
+            [self refreshChannelView];
+        }
+        
+    };
+    channelEdit.chooseIndexBlock = ^(NSInteger index, NSMutableArray<ChannelUnitModel *> *topArr, NSMutableArray<ChannelUnitModel *> *bottomArr){
+        weakSelf.topChannelArr = topArr;
+        weakSelf.bottomChannelArr = bottomArr;
+        //weakSelf.chooseIndex = index;
+        DLog(@"选中了某一项的回调:\n保留的频道有: %@, 选中第%ld个频道", topArr, index);
+        
+        //        NSMutableArray *controllers = [[NSMutableArray alloc] initWithArray:_cursorView.controllers];
+        //
+        //        ShowViewController *controller = [[ShowViewController alloc]init];
+        //        controller.content = @"视频" ;
+        //
+        //        [channelTitles insertObject:@"视频" atIndex:4];
+        //        [controllers insertObject:controller atIndex:4];
+        //
+        //        _cursorView.channelTitles = channelTitles;
+        //        _cursorView.controllers = controllers;
+        //
+        //        //属性设置完成后，调用此方法绘制界面
+        //        [_cursorView reloadPages];
+        
+        _cursorView.selectedIndex = index;
+    };
+    
+    channelEdit.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+    [self presentViewController:channelEdit animated:YES completion:nil];
+}
+// 左侧导航点击事件
+// 改版调整为跳转关注页面
+-(void)leftNavBtn{
+    //    DDMenuController *menuController = (DDMenuController*)((AppDelegate*)[[UIApplication sharedApplication] delegate]).menuController;
+    //    [menuController showLeftController:YES];
+    [self.navigationController pushViewController:[ChannelCollectionViewController new] animated:YES];
+}
+// 右侧搜索点击事件
+-(void)rightNavBtnAction{
+    [FlowUtil startToMainSearchVCNav:self.navigationController];
+}
+-(void)refreshChannelView{
+    /*
+     NSMutableArray *controllers = [[NSMutableArray alloc] initWithArray:_cursorView.controllers];
+     
+     ShowViewController *controller = [[ShowViewController alloc]init];
+     controller.content = @"视频" ;
+     
+     [channelTitles insertObject:@"视频" atIndex:4];
+     [controllers insertObject:controller atIndex:4];
+     */
+    
+    NSMutableArray *contrors = [NSMutableArray array];
+    for (NSInteger i=0; i<_collectArray.count; i++) {
+        InfoCategory* category = _collectArray[i];
+//                if ([category.at_name_ch isEqualToString:@"微信"]) {
+//                    WeChatPublicNumberViewController *webVC = [[WeChatPublicNumberViewController alloc] init];
+//                    [webVC resetTableFrameWithIsLeft:NO];
+//                    [contrors addObject:webVC];
+//        
+//                } else
+        if ([category.at_name_ch isEqualToString:@"微博"]) {
+            BaseWebViewController *webVC = [[BaseWebViewController alloc] init];
+            webVC.webViewHeight = MAIN_SCREEN_HEIGHT-64-ChannelHeight;
+            [webVC loadWeiBoUrl];
+            [contrors addObject:webVC];
+        }else{
+            //首页改版前
+            //            ShowViewController *controller = [[ShowViewController alloc]init];
+            //            controller.index = i;
+            //            controller.category = category;
+            //            [contrors addObject:controller];
+            
+            //改版后首页
+            IndexViewController *controller = [[IndexViewController alloc]init];
+            controller.index = i;
+            controller.category = category;
+            [contrors addObject:controller];
+            
+        }
+    }
+    if (contrors.count > 0) {
+        _cursorView.titles = self.channelTitles;
+        _cursorView.controllers = contrors;
+        _cursorView.selectedIndex = 0;
+        //属性设置完成后，调用此方法绘制界面
+        [_cursorView reloadPages];
+       
+    }
+    
+}
+#pragma mark - 网络数据加载
+//获取分类列表
+-(void)loadData{
+    [[WebAccessManager sharedInstance]getInfoCategoryWithCompletion:^(WebResponse *response, NSError *error) {
+        if (response.success) {
+            [_collectArray removeAllObjects];
+            NSMutableArray* subArray = response.data.atCollectList;
+            [_collectArray addObjectsFromArray:subArray];
+            [self getchannelTitles];
+            [self refreshChannelView];
+        }else{
+            [SVProgressHUDUtil showErrorWithStatus:[error.userInfo objectForKey:@"errorMessage"]];
+        }
+    }];
+}
+//我的频道信息
+-(void)loadMyChannelsData{
+    
+    [[WebAccessManager sharedInstance] getMyCategoryWithcompletion:^(WebResponse *response, NSError *error) {
+        if (response.success) {
+            [_collectArray removeAllObjects];
+            NSMutableArray* subArray = response.data.atCollectList;
+            [_collectArray addObjectsFromArray:subArray];
+            [self getchannelTitles];
+            [self refreshChannelView];
+        }else{
+            [SVProgressHUDUtil showErrorWithStatus:[error.userInfo objectForKey:@"errorMessage"]];
+        }
+    }];
+}
+//所有频道信息
+-(void)loadAllChannelsData{
+    [[WebAccessManager sharedInstance] getAllChannelListWithcompletion:^(WebResponse *response, NSError *error) {
+        if (response.success) {
+            [_allChannelArray removeAllObjects];
+            NSMutableArray* subArray = response.data.atCollectList;
+            [_allChannelArray addObjectsFromArray:subArray];
+        }else{
+            [SVProgressHUDUtil showErrorWithStatus:[error.userInfo objectForKey:@"errorMessage"]];
+        }
+        
+    }];
+}
+//获取未收藏的频道列表
+-(void)getUnCollectChannel{
+    NSMutableArray *unCollectArry = [[NSMutableArray alloc] initWithArray:_allChannelArray];
+    
+    NSMutableArray *idsForCollect = [[NSMutableArray alloc] initWithCapacity:0];
+    for (ChannelModel *model in _collectArray) {
+        [idsForCollect addObject:model.at_id];
+    }
+    for (ChannelModel *model in _allChannelArray) {
+        if ([idsForCollect containsObject:model.at_id]) {
+            [unCollectArry removeObject:model];
+        }
+    }
+    [_unCollectArray removeAllObjects];
+    [_unCollectArray  addObjectsFromArray:unCollectArry];
+}
+//保存我的所有频道
+-(void)saveMyChannelsData:(NSNotification*)notifi{
+    NSDictionary *dic = notifi.userInfo;
+    NSArray *models = dic[@"mychannelmodels"];
+    NSMutableArray *ids = [[NSMutableArray alloc] initWithCapacity:0];
+    for (ChannelUnitModel *model in models) {
+        [ids addObject:model.at_id];
+    }
+    [[WebAccessManager sharedInstance] resetAtCollectNoWithChannelIdS:ids completion:^(WebResponse *response, NSError *error) {
+        if (response.success) {
+            [self loadMyChannelsData];
+        }else{
+            [SVProgressHUDUtil showErrorWithStatus:[error.userInfo objectForKey:@"errorMessage"]];
+        }
+    }];
+}
+#pragma mark - channel 二期接口
+-(NSMutableArray<ChannelUnitModel *> *)topChannelArr{
+    
+    if (!_topChannelArr) {
+        _topChannelArr = [NSMutableArray array];
+    }
+    [_topChannelArr removeAllObjects];
+    for (int i = 0; i < _collectArray.count; i++) {
+        ChannelModel* model = _collectArray[i];
+        ChannelUnitModel *channelModel = [[ChannelUnitModel alloc] init];
+        channelModel.cid = [NSString stringWithFormat:@"%d", i];
+        channelModel.at_id = model.at_id;
+        channelModel.at_name_ch = model.at_name_ch;
+        channelModel.at_name_en = model.at_name_en;
+        channelModel.isTop = YES;
+        [_topChannelArr addObject:channelModel];
+    }
+    return _topChannelArr;
+}
+
+-(NSMutableArray<ChannelUnitModel *> *)bottomChannelArr{
+    
+    if (!_bottomChannelArr) {
+        _bottomChannelArr = [NSMutableArray array];
+    }
+    [_bottomChannelArr removeAllObjects];
+    
+    NSInteger i = _collectArray.count;
+    for (ChannelModel* model in _unCollectArray) {//InfoCategory
+        ChannelUnitModel *channelModel = [[ChannelUnitModel alloc] init];
+        channelModel.cid = [NSString stringWithFormat:@"%ld", i];
+        channelModel.at_id = model.at_id;
+        channelModel.at_name_ch = model.at_name_ch;
+        channelModel.at_name_en = model.at_name_en;
+        channelModel.isTop = NO;
+        [_bottomChannelArr addObject:channelModel];
+        i += 1;
+    }
+    return _bottomChannelArr;
+}
+
+-(void)getchannelTitles{
+    [_channelTitles removeAllObjects];
+    for (ChannelModel* model in _collectArray) {////InfoCategory
+        [_channelTitles addObject:model.at_name_ch];
+    }
+}
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+}
+
+///*********************************test 使用本地数据模拟************************************/
+#pragma mark - channel 二期接口
+- (NSArray *)getDataFromJsonFile:(NSString *)jsonFileName{
+    
+    NSData *JSONData = [NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:jsonFileName ofType:@"json"]];
+    
+    NSArray *dataArray = [NSJSONSerialization JSONObjectWithData:JSONData options:NSJSONReadingAllowFragments error:nil];
+    
+    return dataArray;
+}
+
+-(void)getMyChannel{
+    
+    NSArray *dataArray = [self getDataFromJsonFile:@"mychannel"];
+    
+    NSMutableArray *modelArry = [[NSMutableArray alloc] initWithCapacity:0];
+    for (NSDictionary *dic in dataArray) {
+        ChannelModel *moel = [[ChannelModel alloc] initWithDic:dic];
+        [modelArry addObject:moel];
+    }
+    
+    [_collectArray removeAllObjects];
+    [_collectArray addObjectsFromArray:modelArry];
+    [self getchannelTitles];
+    [self refreshChannelView];
+    
+}
+
+-(void)getAllChannel{
+    
+    NSArray *dataArray = [self getDataFromJsonFile:@"allchannel"];
+    
+    NSMutableArray *modelArry = [[NSMutableArray alloc] initWithCapacity:0];
+    for (NSDictionary *dic in dataArray) {
+        ChannelModel *moel = [[ChannelModel alloc] initWithDic:dic];
+        [modelArry addObject:moel];
+    }
+    
+    [_allChannelArray removeAllObjects];
+    [_allChannelArray addObjectsFromArray:modelArry];
+    
+}
+
+
+@end

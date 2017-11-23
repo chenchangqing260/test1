@@ -1,0 +1,25 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "e828e5b9-a595-764f-9d81-57c2eb79bf16++5326",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+    "e828e5b9-a595-764f-9d81-57c2eb79bf16++5326" : {
+
+    }
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "e828e5b9-a595-764f-9d81-57c2eb79bf16++5326" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "F96050E0-AD81-4449-8A69-31FBFE1D9257",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "e828e5b9-a595-764f-9d81-57c2eb79bf16++5326" : "ScienceChina\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "ScienceChina",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "ScienceChina.xcworkspace",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/192.168.8.248:8443\/svn\/chinaScience",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Subversion",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "e828e5b9-a595-764f-9d81-57c2eb79bf16++5326"
+    }
+  ]
+}

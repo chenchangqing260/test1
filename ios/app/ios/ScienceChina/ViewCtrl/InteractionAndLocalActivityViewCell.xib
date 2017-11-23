@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13196" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13173"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="gTV-IL-0wX" customClass="InteractionAndLocalActivityViewCell">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="220"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="375" height="220"/>
+                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="TwP-iR-sCh">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="220"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gWP-AC-ZEw">
+                                <rect key="frame" x="0.0" y="55" width="375" height="165"/>
+                                <subviews>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="YbY-ZO-7Wh">
+                                        <rect key="frame" x="13" y="8" width="349" height="149"/>
+                                    </imageView>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="2017-07-31" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UjZ-Li-xSV" customClass="FontResizableLabel">
+                                        <rect key="frame" x="279" y="20" width="66" height="15"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="15" id="vqm-8N-ncf"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                        <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <button opaque="NO" contentMode="center" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qK2-M1-Kiw">
+                                        <rect key="frame" x="30" y="20" width="30" height="22"/>
+                                        <color key="backgroundColor" red="0.21176470589999999" green="0.80392156859999997" blue="0.87843137250000003" alpha="0.1008133562" colorSpace="calibratedRGB"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="22" id="t8d-yz-86z"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" type="system" pointSize="10"/>
+                                        <state key="normal" title="投票">
+                                            <color key="titleColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                        </state>
+                                    </button>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="img_join2" translatesAutoresizingMaskIntoConstraints="NO" id="W3q-dD-P1I">
+                                        <rect key="frame" x="285" y="122" width="60" height="23"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="60" id="5U1-mc-H6T"/>
+                                            <constraint firstAttribute="height" constant="23" id="M5W-mj-nte"/>
+                                        </constraints>
+                                    </imageView>
+                                </subviews>
+                                <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.23012093321917809" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstItem="qK2-M1-Kiw" firstAttribute="top" secondItem="gWP-AC-ZEw" secondAttribute="top" constant="20" id="13K-fh-BYx"/>
+                                    <constraint firstItem="YbY-ZO-7Wh" firstAttribute="leading" secondItem="gWP-AC-ZEw" secondAttribute="leading" constant="13" id="E8J-ln-9LH"/>
+                                    <constraint firstAttribute="bottom" secondItem="YbY-ZO-7Wh" secondAttribute="bottom" constant="8" id="HOz-ZW-MZs"/>
+                                    <constraint firstItem="UjZ-Li-xSV" firstAttribute="top" secondItem="gWP-AC-ZEw" secondAttribute="top" constant="20" id="UUX-tj-DXw"/>
+                                    <constraint firstAttribute="bottom" secondItem="W3q-dD-P1I" secondAttribute="bottom" constant="20" id="WUu-xe-u1F"/>
+                                    <constraint firstItem="YbY-ZO-7Wh" firstAttribute="top" secondItem="gWP-AC-ZEw" secondAttribute="top" constant="8" id="ZeA-Lo-DAj"/>
+                                    <constraint firstAttribute="trailing" secondItem="W3q-dD-P1I" secondAttribute="trailing" constant="30" id="d9S-V6-thC"/>
+                                    <constraint firstItem="qK2-M1-Kiw" firstAttribute="leading" secondItem="gWP-AC-ZEw" secondAttribute="leading" constant="30" id="iL9-vJ-kuF"/>
+                                    <constraint firstAttribute="trailing" secondItem="YbY-ZO-7Wh" secondAttribute="trailing" constant="13" id="qk8-h4-sbt"/>
+                                    <constraint firstAttribute="trailing" secondItem="UjZ-Li-xSV" secondAttribute="trailing" constant="30" id="zgA-L6-EKp"/>
+                                </constraints>
+                            </view>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="【视频】第34届少年林业科学总结报告" textAlignment="justified" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4aB-aU-394">
+                                <rect key="frame" x="13" y="13" width="349" height="33"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="33" id="cqE-iN-ac3"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="18"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="gWP-AC-ZEw" secondAttribute="trailing" id="1R0-TU-szp"/>
+                            <constraint firstItem="gWP-AC-ZEw" firstAttribute="top" secondItem="TwP-iR-sCh" secondAttribute="top" constant="55" id="3BN-Ag-aEE"/>
+                            <constraint firstItem="4aB-aU-394" firstAttribute="top" secondItem="TwP-iR-sCh" secondAttribute="top" constant="13" id="489-3G-qHo"/>
+                            <constraint firstAttribute="trailing" secondItem="4aB-aU-394" secondAttribute="trailing" constant="13" id="D25-vl-Ov3"/>
+                            <constraint firstAttribute="bottom" secondItem="gWP-AC-ZEw" secondAttribute="bottom" id="Hhg-vk-Otw"/>
+                            <constraint firstItem="4aB-aU-394" firstAttribute="leading" secondItem="TwP-iR-sCh" secondAttribute="leading" constant="13" id="fOS-QC-SJw"/>
+                            <constraint firstItem="gWP-AC-ZEw" firstAttribute="leading" secondItem="TwP-iR-sCh" secondAttribute="leading" id="wMH-nY-5VI"/>
+                        </constraints>
+                    </view>
+                </subviews>
+            </view>
+            <constraints>
+                <constraint firstAttribute="bottom" secondItem="TwP-iR-sCh" secondAttribute="bottom" id="3aJ-OH-spw"/>
+                <constraint firstAttribute="trailing" secondItem="TwP-iR-sCh" secondAttribute="trailing" id="Fqg-nF-lF6"/>
+                <constraint firstItem="TwP-iR-sCh" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="aVs-sD-sm9"/>
+                <constraint firstItem="TwP-iR-sCh" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="ymO-nf-7G9"/>
+            </constraints>
+            <point key="canvasLocation" x="32.5" y="65"/>
+        </collectionViewCell>
+    </objects>
+    <resources>
+        <image name="img_join2" width="59" height="23"/>
+    </resources>
+</document>

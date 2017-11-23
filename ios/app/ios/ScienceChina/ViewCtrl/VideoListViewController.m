@@ -1,0 +1,290 @@
+//
+//  VideoListViewController.m
+//  ScienceChina
+//
+//  Created by Ellison on 2017/7/17.
+//  Copyright © 2017年 sevenplus. All rights reserved.
+//
+
+#import "VideoListViewController.h"
+#import "ChannelListCell.h"
+#import "ChannelCollectionViewController.h"
+#import "VedioNewTableViewCell.h"
+#import "TextUtil.h"
+#import "CoreStatus.h"
+
+@interface VideoListViewController ()
+
+@property (nonatomic, assign)NSInteger page;
+@property (nonatomic, strong)NSMutableArray* dataArry;
+
+@property (nonatomic, strong)UIImageView *loadImageView;
+@property (nonatomic, strong)UILabel *loadLabel;
+@property (nonatomic, strong)UIImageView *loadNoNetworkImageView;
+
+@end
+
+@implementation VideoListViewController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    self.title = @"视 频";
+    
+     if([CoreStatus isNetworkEnable]){
+         [self setupLoadingView];
+         
+         [self initData];
+       
+         [self loadData];
+         
+     }else{
+         [self setupLoadingNoNetworkView];
+     }
+    
+    [self setupView];
+    
+    [self registerNotice];
+}
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+}
+
+#pragma mark - 注册通知
+-(void)registerNotice{
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(refreshData) name:kNOTOICE_REFRESHINDEXVIEW_INFO object:nil];
+}
+
+
+-(void)refreshData{
+    [self setupLoadingView];
+    
+    [self initData];
+    
+    [self loadData];
+}
+
+-(void)initData{
+    self.page = 1;
+    self.dataArry = [NSMutableArray new];
+}
+
+#pragma mark - 重写父类方法属性
+- (BOOL)showNavBar{
+    return YES;
+}
+
+// 是否允许当前页面手势返回
+- (BOOL)PopGestureEnabled{
+    return NO;
+}
+
+#pragma mark - 初始化界面和数据
+-(void)setupView{
+    
+    UIButton *leftNavBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    leftNavBtn.frame = CGRectMake(0, 0, 35, 25);
+    [leftNavBtn setImage:[UIImage imageNamed:@""] forState:UIControlStateNormal];
+    [leftNavBtn setImage:[UIImage imageNamed:@""] forState:UIControlStateHighlighted];
+    [leftNavBtn setImageEdgeInsets:UIEdgeInsetsMake(0, -15, 0, 15)];
+    
+    UIBarButtonItem *leftItem = [[UIBarButtonItem alloc]initWithCustomView:leftNavBtn];
+    self.navigationItem.leftBarButtonItem = leftItem;
+    
+    //    UIButton *leftNavBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    //    leftNavBtn.frame = CGRectMake(0, 0, 35, 25);
+    //    [leftNavBtn setImage:[UIImage imageNamed:@"focus"] forState:UIControlStateNormal];
+    //    [leftNavBtn setImage:[UIImage imageNamed:@"focus"] forState:UIControlStateHighlighted];
+    //    [leftNavBtn setImageEdgeInsets:UIEdgeInsetsMake(0, -15, 0, 15)];
+    //    [leftNavBtn addTarget:self action:@selector(leftNavBtn) forControlEvents:UIControlEventTouchUpInside];
+    //
+    //    UIBarButtonItem *leftItem = [[UIBarButtonItem alloc]initWithCustomView:leftNavBtn];
+    //    self.navigationItem.leftBarButtonItem = leftItem;
+    
+    
+    //    UIButton *leftNavBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    //    leftNavBtn.frame = CGRectMake(0, 0, 60, 25);
+    //    [leftNavBtn setTitle:@"关注" forState:UIControlStateNormal];
+    //    [leftNavBtn.titleLabel setFont:FONT_14];
+    //    [leftNavBtn setTitleEdgeInsets:UIEdgeInsetsMake(0, -15, 0, 15)];
+    //    [leftNavBtn addTarget:self action:@selector(leftNavBtn) forControlEvents:UIControlEventTouchUpInside];
+    //    UIBarButtonItem *leftItem = [[UIBarButtonItem alloc]initWithCustomView:leftNavBtn];
+    //    self.navigationItem.leftBarButtonItem = leftItem;
+}
+
+// 左侧导航点击事件
+-(void)leftNavBtn{
+    [self.navigationController pushViewController:[ChannelCollectionViewController new] animated:YES];
+}
+
+//加载无网络图标
+-(void)setupLoadingNoNetworkView{
+    CGFloat loadW = 150.0;
+    CGFloat loadH = 150.0;
+    _loadNoNetworkImageView = [[UIImageView alloc] init];
+    _loadNoNetworkImageView.frame = CGRectMake((MAIN_SCREEN_WIDTH-loadW)/2.0, (self.view.frame.size.height-loadH)/2.0-92, loadW, loadH);
+    //_loadImageView.hidden = YES;
+    [self.view addSubview:_loadNoNetworkImageView];
+    
+    _loadNoNetworkImageView.image = [UIImage imageNamed:@"zhanweitu"];
+    [self.view addSubview:_loadNoNetworkImageView];
+    
+    _loadLabel = [[UILabel alloc] init];
+    _loadLabel.frame = CGRectMake((MAIN_SCREEN_WIDTH-loadW)/2.0-20, (self.view.frame.size.height-loadH)/2.0+28, 220, loadH);
+    _loadLabel.text =LStr(@"NoNetwork");
+    _loadLabel.font = [UIFont boldSystemFontOfSize:16];  // 系统字体 加粗
+    [self.view addSubview:_loadLabel];
+}
+
+
+-(void)setupLoadingView{
+    self.uiTableView.hidden=YES;
+    
+         CGFloat loadW = 150.0;
+         CGFloat loadH = 107.0;
+         _loadImageView = [[UIImageView alloc] init];
+         _loadImageView.frame = CGRectMake((MAIN_SCREEN_WIDTH-loadW)/2.0, (self.view.frame.size.height-loadH)/2.0, loadW, loadH);
+         //_loadImageView.hidden = YES;
+         [self.view addSubview:_loadImageView];
+         [self.view insertSubview:_loadImageView atIndex:0];
+         
+         NSString *imgPath = [[NSBundle mainBundle] pathForResource:@"loadingIcon_gif.gif" ofType:nil];
+         NSData  *imageData = [NSData dataWithContentsOfFile:imgPath];
+         _loadImageView.image = [UIImage sd_animatedGIFWithData:imageData];
+
+ 
+}
+
+
+- (void)loadData{
+    [[WebAccessManager sharedInstance]getNewInfoListByCategoryId:@"AT201604301613441019" page:_page showSlide:@"0" rows:30 completion:^(WebResponse *response, NSError *error) {
+        
+        [self.uiTableView.mj_footer endRefreshing];
+        [self.uiTableView.mj_header endRefreshing];
+        
+        if (response.success) {
+            
+            self.uiTableView.hidden = NO;
+            self.loadImageView.hidden = YES;
+            self.loadLabel.hidden = YES;
+            self.loadNoNetworkImageView.hidden = YES;
+            
+            if (self.page == 1) {
+                _dataArry = response.data.list;
+                [self.uiTableView reloadData];
+            }else{
+                if (response.data.list.count > 0) {
+                    // 还有数据
+                    [_dataArry addObjectsFromArray:[response.data.list copy]];
+                    
+                    [self.uiTableView reloadData];
+                }else{
+                    // 没有数据了
+                    self.page -= 1;
+                    [SVProgressHUDUtil showInfoWithStatus:@"暂无更多信息"];
+                }
+            }
+            
+        }else{
+            self.page -= 1;
+            [SVProgressHUDUtil showErrorWithStatus:[error.userInfo objectForKey:@"errorMessage"]];
+        }
+    }];
+}
+
+#pragma mark - TableView DataSource, Delegate
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    return _dataArry.count;
+}
+-(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
+    return 1;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSLog(@"%ld",(long)indexPath.row);
+    HomeModel* h=[self.dataArry objectAtIndex:indexPath.row];
+    VedioNewTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:[VedioNewTableViewCell ID]];
+    if (!cell) {
+        cell = [VedioNewTableViewCell newCell];
+    }
+    [cell setCellWithScienceActivity:h showSpace:NO];
+    
+    return cell;
+    
+}
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    HomeModel* model = [_dataArry objectAtIndex:indexPath.row];
+    // 视频
+    [FlowUtil startToVideoInfoDetailVCNav:self.navigationController in_id:model.ni_id completion:nil];
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    //浏览文章时进行数据统计
+    [self BDIDataStatisticsWithModel:model];
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    //    HomeModel* h = [_dataArry objectAtIndex:indexPath.row];
+    //    CGFloat textHeight = [TextUtil boundingRectWithText:h.ni_title size:CGSizeMake(kSCREEN_WIDTH - 30, 0) Font:FONT_18].height;
+    //    if(textHeight<30){
+    //
+    //        return kSCREEN_WIDTH * (300-21) / kWIDTH_375;
+    //    }else{
+    //        return kSCREEN_WIDTH * 300 / kWIDTH_375;
+    //    }
+    return kSCREEN_WIDTH * 290 / kWIDTH_375;
+}
+
+//获取文字高度
+-(CGFloat)getTitleHeight:(NSString*)str w:(CGFloat)w h:(CGFloat)h{
+    CGSize strSize = [str boundingRectWithSize:CGSizeMake(w, h) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:18]} context:nil].size;
+    
+    return strSize.height;
+}
+
+-(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
+    CGFloat sectionHeight = 4.0;
+    
+    CGFloat _leftEdge = 0;
+    CGFloat _contentViewWidth = MAIN_SCREEN_WIDTH;
+    if (isIpad) {
+        _leftEdge = (MAIN_SCREEN_WIDTH-MAIN_SCREEN_WIDTH_ONIpad)/2.0;
+        _contentViewWidth = MAIN_SCREEN_WIDTH_ONIpad;
+    }
+    
+    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, MAIN_SCREEN_WIDTH, sectionHeight)];
+    view.backgroundColor = [UIColor whiteColor];
+    
+    UIView *contentview = [[UIView alloc] initWithFrame:CGRectMake(_leftEdge, 0, _contentViewWidth, sectionHeight)];
+    contentview.backgroundColor = [UIColor colorWithHex:0xf5f5f5];
+    
+    [view addSubview:contentview];
+    
+    return view;
+}
+
+-(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
+    CGFloat sectionHeight = 4.0;
+    
+    return sectionHeight;
+}
+
+#pragma mark 精准推送数据统计
+-(void)BDIDataStatisticsWithModel:(HomeModel *)model{
+    [BDIDataStatistics onVisitWithModel:model];
+    [BDIDataStatistics additemWithModelNew:model];
+}
+
+#pragma mark - TableView MJRefresh
+- (void)tableViewRefreshHeaderData{
+    _page = 1;
+    [self loadData];
+}
+
+- (void)tableViewRefreshFooterData{
+    _page += 1;
+    [self loadData];
+}
+@end
+

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="10117" systemVersion="15F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" rowHeight="131" id="KGk-i7-Jjw" customClass="CommentTableCell">
+            <rect key="frame" x="0.0" y="0.0" width="347" height="131"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+                <rect key="frame" x="0.0" y="0.0" width="347" height="130.5"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="SQ0-30-tyO" userLabel="BottomLine">
+                        <rect key="frame" x="9" y="130" width="338" height="0.5"/>
+                        <color key="backgroundColor" red="0.92156862745098034" green="0.92156862745098034" blue="0.92156862745098034" alpha="1" colorSpace="calibratedRGB"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="0.5" id="mkP-QG-oQj"/>
+                        </constraints>
+                    </view>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qol-fG-ufZ" userLabel="ContentView">
+                        <rect key="frame" x="0.0" y="0.0" width="347" height="130"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                </subviews>
+                <constraints>
+                    <constraint firstAttribute="bottom" secondItem="SQ0-30-tyO" secondAttribute="bottom" id="5WZ-vI-fd4"/>
+                    <constraint firstItem="SQ0-30-tyO" firstAttribute="top" secondItem="qol-fG-ufZ" secondAttribute="bottom" id="CFG-A4-jCl"/>
+                    <constraint firstAttribute="trailing" secondItem="qol-fG-ufZ" secondAttribute="trailing" id="Cbq-3E-dgj"/>
+                    <constraint firstAttribute="trailing" secondItem="SQ0-30-tyO" secondAttribute="trailing" id="Fxc-Ns-pOG"/>
+                    <constraint firstItem="qol-fG-ufZ" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="HqQ-9g-3Gj"/>
+                    <constraint firstItem="qol-fG-ufZ" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" id="bFt-iS-iDK"/>
+                    <constraint firstItem="SQ0-30-tyO" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="9" id="ere-hG-uML"/>
+                </constraints>
+            </tableViewCellContentView>
+            <connections>
+                <outlet property="uiContentView" destination="qol-fG-ufZ" id="zMN-wL-0fW"/>
+            </connections>
+            <point key="canvasLocation" x="248.5" y="307.5"/>
+        </tableViewCell>
+    </objects>
+</document>

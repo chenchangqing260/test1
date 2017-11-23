@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11542" systemVersion="15G31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11524"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="FeedBackViewController">
+            <connections>
+                <outlet property="leadingEdge_scroll" destination="tkC-sf-UjQ" id="Nb6-K8-79h"/>
+                <outlet property="trailingEdge_scroll" destination="JWC-Zf-xiK" id="yfT-YD-ubn"/>
+                <outlet property="uiScrollHeight" destination="qa4-19-JgR" id="e7l-sD-JJO"/>
+                <outlet property="uiScrollWidth" destination="LPV-NH-3En" id="RSf-cI-iJc"/>
+                <outlet property="uiTextView" destination="GMC-4G-mMl" id="7qh-ly-10e"/>
+                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="QKX-en-U20">
+                    <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                    <subviews>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="IKM-96-pBU">
+                            <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                            <subviews>
+                                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="GMC-4G-mMl" customClass="BRPlaceholderTextView">
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="300"/>
+                                    <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <constraints>
+                                        <constraint firstAttribute="height" constant="300" id="Eb4-q2-urA"/>
+                                    </constraints>
+                                    <color key="textColor" red="0.1333333333" green="0.1333333333" blue="0.1333333333" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                    <textInputTraits key="textInputTraits" autocapitalizationType="sentences" returnKeyType="done"/>
+                                    <connections>
+                                        <outlet property="delegate" destination="-1" id="n06-Su-lXC"/>
+                                    </connections>
+                                </textView>
+                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fhC-Kc-dg4">
+                                    <rect key="frame" x="30" y="350" width="315" height="40"/>
+                                    <color key="backgroundColor" red="0.20000000000000001" green="0.81176470590000005" blue="0.85490196080000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <constraints>
+                                        <constraint firstAttribute="height" constant="40" id="GmK-eo-Bxg"/>
+                                    </constraints>
+                                    <state key="normal" title="提  交">
+                                        <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    </state>
+                                    <connections>
+                                        <action selector="clickSubmitData:" destination="-1" eventType="touchUpInside" id="Hmf-TO-sel"/>
+                                    </connections>
+                                </button>
+                            </subviews>
+                            <color key="backgroundColor" red="0.96078431372549022" green="0.96078431372549022" blue="0.96078431372549022" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <constraints>
+                                <constraint firstAttribute="trailing" secondItem="GMC-4G-mMl" secondAttribute="trailing" id="CZY-3k-JFB"/>
+                                <constraint firstItem="GMC-4G-mMl" firstAttribute="top" secondItem="IKM-96-pBU" secondAttribute="top" id="Jm8-Lt-jIn"/>
+                                <constraint firstAttribute="width" constant="375" id="LPV-NH-3En"/>
+                                <constraint firstAttribute="trailing" secondItem="fhC-Kc-dg4" secondAttribute="trailing" constant="30" id="b3z-Bs-Agx"/>
+                                <constraint firstItem="fhC-Kc-dg4" firstAttribute="centerX" secondItem="IKM-96-pBU" secondAttribute="centerX" id="oXK-O5-BPl"/>
+                                <constraint firstAttribute="height" constant="667" id="qa4-19-JgR"/>
+                                <constraint firstItem="fhC-Kc-dg4" firstAttribute="top" secondItem="GMC-4G-mMl" secondAttribute="bottom" constant="50" id="rN9-pF-Cr5"/>
+                                <constraint firstItem="GMC-4G-mMl" firstAttribute="leading" secondItem="IKM-96-pBU" secondAttribute="leading" id="sNp-av-ps5"/>
+                            </constraints>
+                        </view>
+                    </subviews>
+                    <constraints>
+                        <constraint firstItem="IKM-96-pBU" firstAttribute="leading" secondItem="QKX-en-U20" secondAttribute="leading" id="AFn-9Z-axV"/>
+                        <constraint firstAttribute="bottom" secondItem="IKM-96-pBU" secondAttribute="bottom" id="Dgv-0V-5l0"/>
+                        <constraint firstItem="IKM-96-pBU" firstAttribute="top" secondItem="QKX-en-U20" secondAttribute="top" id="jtS-0A-urV"/>
+                        <constraint firstAttribute="trailing" secondItem="IKM-96-pBU" secondAttribute="trailing" id="vde-tC-oMc"/>
+                    </constraints>
+                </scrollView>
+            </subviews>
+            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <constraints>
+                <constraint firstAttribute="trailing" secondItem="QKX-en-U20" secondAttribute="trailing" id="JWC-Zf-xiK"/>
+                <constraint firstAttribute="bottom" secondItem="QKX-en-U20" secondAttribute="bottom" id="QP4-aH-5dO"/>
+                <constraint firstItem="QKX-en-U20" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="mHO-jQ-BPd"/>
+                <constraint firstItem="QKX-en-U20" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="tkC-sf-UjQ"/>
+            </constraints>
+        </view>
+    </objects>
+</document>

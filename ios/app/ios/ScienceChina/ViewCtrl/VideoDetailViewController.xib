@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11201" systemVersion="15G1004" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11161"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="VideoDetailViewController">
+            <connections>
+                <outlet property="uiBackHomeBtn" destination="Adu-4c-hBI" id="ndd-yx-jfF"/>
+                <outlet property="uiCollectionView" destination="8eL-VS-JHX" id="wrt-lm-oQm"/>
+                <outlet property="uiContentView" destination="9ab-yd-Orn" id="7NH-Y9-9XF"/>
+                <outlet property="uiVideoRecLayout" destination="Vgy-40-OcV" id="rIm-cn-m9A"/>
+                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="XO5-NJ-e0Z" userLabel="StatusBar">
+                    <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="20" id="vzj-44-sEL"/>
+                    </constraints>
+                </view>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9ab-yd-Orn" userLabel="ContentView">
+                    <subviews>
+                        <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="8eL-VS-JHX">
+                            <color key="backgroundColor" red="0.96078431369999995" green="0.96078431369999995" blue="0.96078431369999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="Vgy-40-OcV" customClass="VideoRecLayout">
+                                <size key="itemSize" width="50" height="50"/>
+                                <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                            </collectionViewFlowLayout>
+                            <connections>
+                                <outlet property="dataSource" destination="-1" id="79e-dk-KY5"/>
+                                <outlet property="delegate" destination="-1" id="7c1-wb-Tp5"/>
+                            </connections>
+                        </collectionView>
+                    </subviews>
+                    <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <constraints>
+                        <constraint firstItem="8eL-VS-JHX" firstAttribute="top" secondItem="9ab-yd-Orn" secondAttribute="top" id="ZJw-aE-SEb"/>
+                        <constraint firstAttribute="trailing" secondItem="8eL-VS-JHX" secondAttribute="trailing" id="bbb-sl-hEw"/>
+                        <constraint firstItem="8eL-VS-JHX" firstAttribute="leading" secondItem="9ab-yd-Orn" secondAttribute="leading" id="fcY-rt-d1F"/>
+                        <constraint firstAttribute="bottom" secondItem="8eL-VS-JHX" secondAttribute="bottom" id="ouV-BN-Zn5"/>
+                    </constraints>
+                </view>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="A0G-vU-zhG">
+                    <constraints>
+                        <constraint firstAttribute="height" constant="50" id="NoK-pW-PRR"/>
+                        <constraint firstAttribute="width" constant="50" id="eAT-Zs-fDN"/>
+                    </constraints>
+                    <state key="normal" image="返回圆圈"/>
+                    <connections>
+                        <action selector="clickBackBtn:" destination="-1" eventType="touchUpInside" id="C4W-jj-1ZS"/>
+                    </connections>
+                </button>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Adu-4c-hBI">
+                    <constraints>
+                        <constraint firstAttribute="width" constant="51" id="EiE-19-GXS"/>
+                        <constraint firstAttribute="height" constant="51" id="f42-oF-BzF"/>
+                    </constraints>
+                    <state key="normal" image="backhome"/>
+                    <connections>
+                        <action selector="clickBackHomeBtnAction:" destination="-1" eventType="touchUpInside" id="Jjr-s4-bty"/>
+                    </connections>
+                </button>
+            </subviews>
+            <color key="backgroundColor" red="0.96078431372549022" green="0.96078431372549022" blue="0.96078431372549022" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <constraints>
+                <constraint firstItem="A0G-vU-zhG" firstAttribute="top" secondItem="XO5-NJ-e0Z" secondAttribute="bottom" id="3Jt-K1-tIY"/>
+                <constraint firstAttribute="trailing" secondItem="XO5-NJ-e0Z" secondAttribute="trailing" id="DWQ-jd-jNy"/>
+                <constraint firstItem="9ab-yd-Orn" firstAttribute="top" secondItem="XO5-NJ-e0Z" secondAttribute="bottom" id="Dwo-NQ-vfV"/>
+                <constraint firstItem="9ab-yd-Orn" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="Iqo-vO-VCh"/>
+                <constraint firstItem="XO5-NJ-e0Z" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="PGQ-cF-iGL"/>
+                <constraint firstAttribute="bottom" secondItem="Adu-4c-hBI" secondAttribute="bottom" constant="30" id="PO7-p5-lb4"/>
+                <constraint firstAttribute="trailing" secondItem="9ab-yd-Orn" secondAttribute="trailing" id="QNa-4F-VDw"/>
+                <constraint firstItem="XO5-NJ-e0Z" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="TQ1-ch-W0q"/>
+                <constraint firstItem="A0G-vU-zhG" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="UrT-QC-yfl"/>
+                <constraint firstItem="Adu-4c-hBI" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="20" id="ctX-O2-FPT"/>
+                <constraint firstAttribute="bottom" secondItem="9ab-yd-Orn" secondAttribute="bottom" id="pm1-rh-Fpz"/>
+            </constraints>
+        </view>
+    </objects>
+    <resources>
+        <image name="backhome" width="46" height="46"/>
+        <image name="返回圆圈" width="33" height="33"/>
+    </resources>
+</document>

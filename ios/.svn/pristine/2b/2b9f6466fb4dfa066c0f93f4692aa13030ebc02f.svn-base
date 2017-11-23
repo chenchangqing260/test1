@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11542" systemVersion="15G31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11524"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="MyCommentViewController">
+            <connections>
+                <outlet property="leadingEdge" destination="TX4-v2-aHC" id="alR-Ou-I1E"/>
+                <outlet property="trailingEdge" destination="gxH-r3-hdV" id="0xE-V6-uPJ"/>
+                <outlet property="uiDefaultView" destination="wA6-1L-AIL" id="L9w-Tu-vDA"/>
+                <outlet property="uiTableView" destination="w2Q-QC-MPR" id="t63-bE-qMx"/>
+                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="wA6-1L-AIL" userLabel="DefaultView">
+                    <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                    <subviews>
+                        <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" image="defaultpinglun" translatesAutoresizingMaskIntoConstraints="NO" id="yhM-Lx-geS">
+                            <rect key="frame" x="131" y="218" width="112" height="112"/>
+                        </imageView>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="暂无任何评论" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Mmu-go-wXO">
+                            <rect key="frame" x="136" y="355.5" width="102" height="21"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                            <color key="textColor" red="0.1647058824" green="0.1647058824" blue="0.1647058824" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="你可以在内容详情页进行评论" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VXj-lw-Dys">
+                            <rect key="frame" x="102.5" y="394.5" width="169" height="16"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                            <color key="textColor" red="0.76078431369999999" green="0.76078431369999999" blue="0.76078431369999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                    </subviews>
+                    <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <constraints>
+                        <constraint firstItem="VXj-lw-Dys" firstAttribute="top" secondItem="Mmu-go-wXO" secondAttribute="bottom" constant="18" id="Aeu-GG-IxK"/>
+                        <constraint firstItem="Mmu-go-wXO" firstAttribute="top" secondItem="yhM-Lx-geS" secondAttribute="bottom" constant="26" id="bIB-Tf-vgO"/>
+                        <constraint firstItem="yhM-Lx-geS" firstAttribute="centerX" secondItem="wA6-1L-AIL" secondAttribute="centerX" id="dnp-zB-jlf"/>
+                        <constraint firstItem="VXj-lw-Dys" firstAttribute="centerX" secondItem="Mmu-go-wXO" secondAttribute="centerX" id="pLS-jp-FVa"/>
+                        <constraint firstItem="Mmu-go-wXO" firstAttribute="centerX" secondItem="yhM-Lx-geS" secondAttribute="centerX" id="qep-e9-Bme"/>
+                        <constraint firstItem="yhM-Lx-geS" firstAttribute="centerY" secondItem="wA6-1L-AIL" secondAttribute="centerY" constant="-60" id="xvn-yb-I0y"/>
+                    </constraints>
+                </view>
+                <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="none" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="w2Q-QC-MPR">
+                    <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                    <color key="backgroundColor" red="0.96078431372549022" green="0.96078431372549022" blue="0.96078431372549022" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <connections>
+                        <outlet property="dataSource" destination="-1" id="ilk-cX-V2P"/>
+                        <outlet property="delegate" destination="-1" id="LfA-7p-hcz"/>
+                    </connections>
+                </tableView>
+            </subviews>
+            <color key="backgroundColor" red="0.96078431372549022" green="0.96078431372549022" blue="0.96078431372549022" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <constraints>
+                <constraint firstAttribute="bottom" secondItem="wA6-1L-AIL" secondAttribute="bottom" id="Hob-ly-BtA"/>
+                <constraint firstAttribute="bottom" secondItem="w2Q-QC-MPR" secondAttribute="bottom" id="QuC-rj-oxW"/>
+                <constraint firstItem="w2Q-QC-MPR" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="TX4-v2-aHC"/>
+                <constraint firstItem="w2Q-QC-MPR" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="WZi-vq-91s"/>
+                <constraint firstAttribute="trailing" secondItem="wA6-1L-AIL" secondAttribute="trailing" id="Wcs-zX-BPL"/>
+                <constraint firstItem="wA6-1L-AIL" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="dXe-H3-BVf"/>
+                <constraint firstAttribute="trailing" secondItem="w2Q-QC-MPR" secondAttribute="trailing" id="gxH-r3-hdV"/>
+                <constraint firstItem="wA6-1L-AIL" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="rXd-dK-ZeV"/>
+            </constraints>
+        </view>
+    </objects>
+    <resources>
+        <image name="defaultpinglun" width="112" height="112"/>
+    </resources>
+</document>

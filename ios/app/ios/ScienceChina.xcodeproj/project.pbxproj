@@ -461,7 +461,6 @@
 		7A3E22F41F3433F50036DC58 /* ActivityRemIndexCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7A3E22F21F3433F50036DC58 /* ActivityRemIndexCollectionViewCell.xib */; };
 		7A3E22F81F34701B0036DC58 /* ActivityIndexTitleCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A3E22F61F34701B0036DC58 /* ActivityIndexTitleCollectionViewCell.m */; };
 		7A3E22F91F34701B0036DC58 /* ActivityIndexTitleCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7A3E22F71F34701B0036DC58 /* ActivityIndexTitleCollectionViewCell.xib */; };
-		7A42F2831FC669F600B88587 /* WebAccessManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A42F2821FC669F600B88587 /* WebAccessManager.m */; };
 		7A59544E1F66230A004EF152 /* SummaryPersonDetailTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A59544C1F66230A004EF152 /* SummaryPersonDetailTableCell.m */; };
 		7A59544F1F66230A004EF152 /* SummaryPersonDetailTableCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7A59544D1F66230A004EF152 /* SummaryPersonDetailTableCell.xib */; };
 		7A5954531F6623EF004EF152 /* SummaryPersonDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A5954511F6623EF004EF152 /* SummaryPersonDetailViewController.m */; };
@@ -1482,8 +1481,6 @@
 		7A3E22F51F34701B0036DC58 /* ActivityIndexTitleCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActivityIndexTitleCollectionViewCell.h; sourceTree = "<group>"; };
 		7A3E22F61F34701B0036DC58 /* ActivityIndexTitleCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActivityIndexTitleCollectionViewCell.m; sourceTree = "<group>"; };
 		7A3E22F71F34701B0036DC58 /* ActivityIndexTitleCollectionViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ActivityIndexTitleCollectionViewCell.xib; sourceTree = "<group>"; };
-		7A42F2811FC669F500B88587 /* WebAccessManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebAccessManager.h; sourceTree = "<group>"; };
-		7A42F2821FC669F600B88587 /* WebAccessManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WebAccessManager.m; sourceTree = "<group>"; };
 		7A59544B1F66230A004EF152 /* SummaryPersonDetailTableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SummaryPersonDetailTableCell.h; sourceTree = "<group>"; };
 		7A59544C1F66230A004EF152 /* SummaryPersonDetailTableCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SummaryPersonDetailTableCell.m; sourceTree = "<group>"; };
 		7A59544D1F66230A004EF152 /* SummaryPersonDetailTableCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SummaryPersonDetailTableCell.xib; sourceTree = "<group>"; };
@@ -2664,8 +2661,6 @@
 				332BBA971CD2412600A084B9 /* RestClient.h */,
 				332BBA981CD2412600A084B9 /* RestClient.m */,
 				332BBA991CD2412600A084B9 /* WebAccessErrorCodes.h */,
-				7A42F2811FC669F500B88587 /* WebAccessManager.h */,
-				7A42F2821FC669F600B88587 /* WebAccessManager.m */,
 			);
 			path = WebAccess;
 			sourceTree = "<group>";
@@ -5356,7 +5351,6 @@
 				7A9CDCE81FB2DBEE006E7264 /* MusicDetialViewController.m in Sources */,
 				33F713DA1ECD7DC50082BD81 /* HXProvincialCitiesCountiesPickerview.m in Sources */,
 				334DEE0E1CE4B3CA00441E01 /* QNKeyHelper.m in Sources */,
-				7A42F2831FC669F600B88587 /* WebAccessManager.m in Sources */,
 				33099E1C1CE30397004E2D0E /* ContextMenuCell.m in Sources */,
 				332BBA801CD2411900A084B9 /* RDVTabBar.m in Sources */,
 				333B2EB81F274A1600430A81 /* MyActivityListViewController.m in Sources */,
